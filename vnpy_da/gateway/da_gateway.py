@@ -1,7 +1,7 @@
 from datetime import datetime
 from copy import copy
 from collections import defaultdict
-from typing import Dict, List
+from typing import Dict, List, Optional
 from csv import DictReader
 from io import StringIO
 
@@ -43,7 +43,7 @@ from vnpy.trader.object import (
 
 
 # 委托状态映射
-STATUS_DA2VT = {
+STATUS_DA2VT: Dict[str, Status] = {
     "1": Status.SUBMITTING,
     "2": Status.NOTTRADED,
     "3": Status.PARTTRADED,
@@ -57,31 +57,31 @@ STATUS_DA2VT = {
 }
 
 # 多空方向映射
-DIRECTION_VT2DA = {
+DIRECTION_VT2DA: Dict[Direction, str] = {
     Direction.LONG: "1",
     Direction.SHORT: "2"
 }
-DIRECTION_DA2VT = {v: k for k, v in DIRECTION_VT2DA.items()}
+DIRECTION_DA2VT: Dict[str, Direction] = {v: k for k, v in DIRECTION_VT2DA.items()}
 
 
 # 委托类型映射
-ORDERTYPE_VT2DA = {
+ORDERTYPE_VT2DA: Dict[OrderType, str] = {
     OrderType.LIMIT: "1",
     OrderType.MARKET: "2"
 }
-ORDERTYPE_DA2VT = {v: k for k, v in ORDERTYPE_VT2DA.items()}
+ORDERTYPE_DA2VT: Dict[str, OrderType] = {v: k for k, v in ORDERTYPE_VT2DA.items()}
 
 # 开平方向映射
-OFFSET_VT2DA = {
+OFFSET_VT2DA: Dict[Offset, str] = {
     Offset.OPEN: "1",
     Offset.CLOSE: "2",
     Offset.CLOSETODAY: "3",
     Offset.CLOSEYESTERDAY: "4",
 }
-OFFSET_DA2VT = {v: k for k, v in OFFSET_VT2DA.items()}
+OFFSET_DA2VT: Dict[str, Offset] = {v: k for k, v in OFFSET_VT2DA.items()}
 
 # 交易所映射
-EXCHANGE_DA2VT = {
+EXCHANGE_DA2VT: Dict[str, Exchange] = {
     "CME": Exchange.CME,
     "CME_CBT": Exchange.CBOT,
     "LME": Exchange.LME,
@@ -93,16 +93,16 @@ EXCHANGE_DA2VT = {
     "DCE": Exchange.DCE,
     "CZCE": Exchange.CZCE
 }
-EXCHANGE_VT2DA = {v: k for k, v in EXCHANGE_DA2VT.items()}
+EXCHANGE_VT2DA: Dict[Exchange, str] = {v: k for k, v in EXCHANGE_DA2VT.items()}
 
 # 产品类型映射
-PRODUCT_DA2VT = {
+PRODUCT_DA2VT: Dict[str, Product] = {
     "F": Product.FUTURES,
     "O": Product.OPTION,
 }
 
 # 期权类型映射
-OPTIONTYPE_DA2VT = {
+OPTIONTYPE_DA2VT: Dict[str, OptionType] = {
     "R": OptionType.CALL,
     "F": OptionType.PUT
 }
@@ -111,10 +111,10 @@ OPTIONTYPE_DA2VT = {
 CHINA_TZ = pytz.timezone("Asia/Shanghai")       # 中国时区
 
 # 全局缓存字典
-symbol_name_map = {}
-symbol_currency_map = {}
-currency_account_map = {}
-account_currency_map = {}
+symbol_name_map: Dict[str, str] = {}
+symbol_currency_map: Dict[str, str] = {}
+currency_account_map: Dict[str, str] = {}
+account_currency_map: Dict[str, str] = {}
 
 
 class DaGateway(BaseGateway):
@@ -134,8 +134,8 @@ class DaGateway(BaseGateway):
         """构造函数"""
         super().__init__(event_engine, "DA")
 
-        self.future_api: "DaFutureApi" = DaFutureApi(self)
-        self.market_api: "DaMarketApi" = DaMarketApi(self)
+        self.future_api: DaFutureApi = DaFutureApi(self)
+        self.market_api: DaMarketApi = DaMarketApi(self)
 
     def connect(self, setting: dict) -> None:
         """连接交易接口"""
@@ -178,7 +178,7 @@ class DaGateway(BaseGateway):
         print(req)
         path: str = "http://222.73.120.40:8609/api/HistoryQuote"
 
-        params: dict = {
+        params: Dict[str, str] = {
             "type": "M1",
             "exchangeNo": EXCHANGE_VT2DA[req.exchange],
             "symbol": req.symbol,
@@ -193,7 +193,7 @@ class DaGateway(BaseGateway):
 
         r: Response = requests.get(path, headers=headers, params=params)
 
-        bars: list = []
+        bars: List[BarData] = []
         reader: List[dict] = DictReader(StringIO(r.json()))
         for d in reader:
             dt: datetime = datetime.strptime(d["时间"], "%Y-%m-%d %H:%M")
@@ -242,7 +242,7 @@ class DaMarketApi(MarketApi):
 
         self.connect_status: bool = False
         self.login_status: bool = False
-        self.subscribed: dict = {}
+        self.subscribed: Dict[str, SubscribeRequest] = {}
         self.mac_address: str = get_mac_address()
 
         self.userid: str = ""
@@ -262,7 +262,7 @@ class DaMarketApi(MarketApi):
     def onRspUserLogin(self, error: dict, reqid: int, last: bool) -> None:
         """用户登陆请求回报"""
         if not error["ErrorID"]:
-            self.login_status = True
+            self.login_status: bool = True
             self.gateway.write_log("行情服务器登录成功")
 
             for req in self.subscribed.values():
@@ -402,8 +402,8 @@ class DaFutureApi(FutureApi):
 
         self.exchange_page = defaultdict(int)
 
-        self.orders: dict = {}
-        self.order_info: dict = {}
+        self.orders: Dict[str, OrderData] = {}
+        self.order_info: Dict[str, tuple] = {}
 
     def onFrontConnected(self) -> None:
         """服务器连接成功回报"""
@@ -480,7 +480,7 @@ class DaFutureApi(FutureApi):
         if error["ErrorID"]:
             return
 
-        product: Product = PRODUCT_DA2VT.get(data["CommodityType"], None)
+        product: Optional[Product] = PRODUCT_DA2VT.get(data["CommodityType"], None)
 
         if product:
             contract: ContractData = ContractData(
@@ -705,7 +705,7 @@ class DaFutureApi(FutureApi):
 
     def authenticate(self) -> None:
         """鉴权"""
-        req = {
+        req: Dict[str, str] = {
             "UserID": self.userid,
             "BrokerID": self.brokerid,
             "AuthCode": self.auth_code,
@@ -777,7 +777,7 @@ class DaFutureApi(FutureApi):
         account_no: str = currency_account_map[currency]
         order_no, system_no = self.order_info[order.orderid]
 
-        da_req: dict = {
+        da_req: Dict[str, str] = {
             "UserId": self.userid,
             "LocalNo": req.orderid,
             "AccountNo": account_no,
@@ -816,9 +816,9 @@ class DaFutureApi(FutureApi):
         self.reqid += 1
         self.reqQryTotalPosition(da_req, self.reqid)
 
-    def query_contract(self, exchange, page=0) -> None:
+    def query_contract(self, exchange: Exchange, page=0) -> None:
         """查询合约"""
-        da_exchange: Exchange = EXCHANGE_VT2DA[exchange]
+        da_exchange: str = EXCHANGE_VT2DA[exchange]
 
         req: dict = {
             "PageIndex": page * 1000,
