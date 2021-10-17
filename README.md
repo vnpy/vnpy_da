@@ -5,14 +5,14 @@
 
 <p align="center">
     <img src ="https://img.shields.io/badge/version-2.0-blueviolet.svg"/>
-    <img src ="https://img.shields.io/badge/platform-windows|linux-yellow.svg"/>
+    <img src ="https://img.shields.io/badge/platform-windows-yellow.svg"/>
     <img src ="https://img.shields.io/badge/python-3.7-blue.svg" />
     <img src ="https://img.shields.io/github/license/vnpy/vnpy.svg?color=orange"/>
 </p>
 
 ## 说明
 
-基于直达期货的2.0接口封装开发。
+基于直达期货的2.0接口封装开发的windows接口。
 
 ## 安装
 
