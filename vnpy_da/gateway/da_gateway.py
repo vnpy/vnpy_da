@@ -118,7 +118,9 @@ account_currency_map: Dict[str, str] = {}
 
 
 class DaGateway(BaseGateway):
-    """vn.py用于对接直达期货的接口"""
+    """
+    vn.py用于对接直达期货的接口。
+    """
 
     default_setting: Dict[str, str] = {
         "用户名": "",
