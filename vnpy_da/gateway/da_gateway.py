@@ -259,7 +259,7 @@ class DaMarketApi(MarketApi):
         self.gateway.write_log(f"行情服务器连接断开，原因{reason}")
 
     def onRspUserLogin(self, error: dict, reqid: int, last: bool) -> None:
-        """用户登陆请求回报"""
+        """用户登录请求回报"""
         if not error["ErrorID"]:
             self.login_status: bool = True
             self.gateway.write_log("行情服务器登录成功")
@@ -331,12 +331,12 @@ class DaMarketApi(MarketApi):
             self.init()
 
             self.connect_status = True
-        # 登陆
+        # 登录
         elif not self.login_status:
             self.login()
 
     def login(self) -> None:
-        """用户登陆"""
+        """用户登录"""
         req: dict = {
             "UserId": self.userid,
             "UserPwd": self.password,
@@ -415,7 +415,7 @@ class DaFutureApi(FutureApi):
         self.gateway.write_log(f"交易服务器连接断开，原因{reason}")
 
     def onRspUserLogin(self, error: dict, reqid: int, last: bool) -> None:
-        """用户登陆请求回报"""
+        """用户登录请求回报"""
         if not error["ErrorID"]:
             self.login_status: bool = True
             self.gateway.write_log("交易服务器登录成功")
@@ -696,7 +696,7 @@ class DaFutureApi(FutureApi):
             self.login()
 
     def authenticate(self) -> None:
-        """鉴权"""
+        """发起授权验证"""
         req: dict = {
             "UserID": self.userid,
             "BrokerID": self.brokerid,
@@ -711,7 +711,7 @@ class DaFutureApi(FutureApi):
         self.reqAuthenticate(req, self.reqid)
 
     def login(self) -> None:
-        """用户登陆"""
+        """用户登录"""
         req: dict = {
             "UserId": self.userid,
             "UserPwd": self.password,
