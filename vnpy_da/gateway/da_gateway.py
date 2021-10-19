@@ -215,7 +215,7 @@ class DaGateway(BaseGateway):
         return bars
 
     def close(self) -> None:
-        """关闭连接"""
+        """关闭接口"""
         self.future_api.close()
         self.market_api.close()
 
