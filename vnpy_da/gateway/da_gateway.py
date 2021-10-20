@@ -1,7 +1,7 @@
 from datetime import datetime
 from copy import copy
 from collections import defaultdict
-from typing import Dict, List, Optional
+from typing import Dict, List, Tuple
 from csv import DictReader
 from io import StringIO
 
@@ -118,7 +118,9 @@ account_currency_map: Dict[str, str] = {}
 
 
 class DaGateway(BaseGateway):
-    """vn.py用于对接直达期货的接口"""
+    """
+    vn.py用于对接直达期货的接口。
+    """
 
     default_setting: Dict[str, str] = {
         "用户名": "",
@@ -134,8 +136,8 @@ class DaGateway(BaseGateway):
         """构造函数"""
         super().__init__(event_engine, "DA")
 
-        self.future_api: DaFutureApi = DaFutureApi(self)
-        self.market_api: DaMarketApi = DaMarketApi(self)
+        self.future_api: "DaFutureApi" = DaFutureApi(self)
+        self.market_api: "DaMarketApi" = DaMarketApi(self)
 
     def connect(self, setting: dict) -> None:
         """连接交易接口"""
@@ -175,10 +177,9 @@ class DaGateway(BaseGateway):
 
     def query_history(self, req: HistoryRequest) -> List[BarData]:
         """查询历史数据"""
-        print(req)
         path: str = "http://222.73.120.40:8609/api/HistoryQuote"
 
-        params: Dict[str, str] = {
+        params: dict = {
             "type": "M1",
             "exchangeNo": EXCHANGE_VT2DA[req.exchange],
             "symbol": req.symbol,
@@ -189,7 +190,7 @@ class DaGateway(BaseGateway):
         if req.end:
             params["endTime"] = req.end.strftime("%Y-%m-%d")
 
-        headers: Dict[str, str] = {"Accept-Encoding": "gzip"}
+        headers: dict = {"Accept-Encoding": "gzip"}
 
         r: Response = requests.get(path, headers=headers, params=params)
 
@@ -216,7 +217,7 @@ class DaGateway(BaseGateway):
         return bars
 
     def close(self) -> None:
-        """关闭连接"""
+        """关闭接口"""
         self.future_api.close()
         self.market_api.close()
 
@@ -260,7 +261,7 @@ class DaMarketApi(MarketApi):
         self.gateway.write_log(f"行情服务器连接断开，原因{reason}")
 
     def onRspUserLogin(self, error: dict, reqid: int, last: bool) -> None:
-        """用户登陆请求回报"""
+        """用户登录请求回报"""
         if not error["ErrorID"]:
             self.login_status: bool = True
             self.gateway.write_log("行情服务器登录成功")
@@ -332,13 +333,13 @@ class DaMarketApi(MarketApi):
             self.init()
 
             self.connect_status = True
-        # 登陆
+        # 登录
         elif not self.login_status:
             self.login()
 
     def login(self) -> None:
-        """用户登陆"""
-        req: Dict[str, str] = {
+        """用户登录"""
+        req: dict = {
             "UserId": self.userid,
             "UserPwd": self.password,
             "AuthorCode": self.auth_code,
@@ -403,7 +404,7 @@ class DaFutureApi(FutureApi):
         self.exchange_page = defaultdict(int)
 
         self.orders: Dict[str, OrderData] = {}
-        self.order_info: Dict[str, tuple] = {}
+        self.order_info: Dict[str, Tuple] = {}
 
     def onFrontConnected(self) -> None:
         """服务器连接成功回报"""
@@ -416,7 +417,7 @@ class DaFutureApi(FutureApi):
         self.gateway.write_log(f"交易服务器连接断开，原因{reason}")
 
     def onRspUserLogin(self, error: dict, reqid: int, last: bool) -> None:
-        """用户登陆请求回报"""
+        """用户登录请求回报"""
         if not error["ErrorID"]:
             self.login_status: bool = True
             self.gateway.write_log("交易服务器登录成功")
@@ -424,9 +425,6 @@ class DaFutureApi(FutureApi):
             # 查询可交易合约
             for exchange in EXCHANGE_DA2VT.values():
                 self.query_contract(exchange)
-
-            # self.reqid += 1
-            # self.reqQryExchange({}, self.reqid)
 
             # 查询账户信息
             self.query_account()
@@ -480,7 +478,7 @@ class DaFutureApi(FutureApi):
         if error["ErrorID"]:
             return
 
-        product: Optional[Product] = PRODUCT_DA2VT.get(data["CommodityType"], None)
+        product: Product = PRODUCT_DA2VT.get(data["CommodityType"], None)
 
         if product:
             contract: ContractData = ContractData(
@@ -510,10 +508,6 @@ class DaFutureApi(FutureApi):
 
             self.exchange_page[contract.exchange] += 1
             self.query_contract(contract.exchange, self.exchange_page[contract.exchange])
-
-    def onRspQryExchange(self, data: dict, error: dict, reqid: int, last: bool) -> None:
-        """交易所查询回报"""
-        print(data)
 
     def onRspQryOrder(self, data: dict, error: dict, reqid: int, last: bool) -> None:
         """委托查询回报"""
@@ -704,8 +698,8 @@ class DaFutureApi(FutureApi):
             self.login()
 
     def authenticate(self) -> None:
-        """鉴权"""
-        req: Dict[str, str] = {
+        """发起授权验证"""
+        req: dict = {
             "UserID": self.userid,
             "BrokerID": self.brokerid,
             "AuthCode": self.auth_code,
@@ -719,8 +713,8 @@ class DaFutureApi(FutureApi):
         self.reqAuthenticate(req, self.reqid)
 
     def login(self) -> None:
-        """用户登陆"""
-        req: Dict[str, str] = {
+        """用户登录"""
+        req: dict = {
             "UserId": self.userid,
             "UserPwd": self.password,
             "AuthorCode": self.auth_code,
@@ -740,7 +734,7 @@ class DaFutureApi(FutureApi):
         currency: str = symbol_currency_map[req.symbol]
         account_no: str = currency_account_map[currency]
 
-        da_req: Dict[str, str] = {
+        da_req: dict = {
             "UserId": self.userid,
             "AccountNo": account_no,
             "LocalNo": str(self.local_no),
@@ -777,7 +771,7 @@ class DaFutureApi(FutureApi):
         account_no: str = currency_account_map[currency]
         order_no, system_no = self.order_info[order.orderid]
 
-        da_req: Dict[str, str] = {
+        da_req: dict = {
             "UserId": self.userid,
             "LocalNo": req.orderid,
             "AccountNo": account_no,
@@ -804,14 +798,14 @@ class DaFutureApi(FutureApi):
 
     def query_trade(self) -> None:
         """查询成交"""
-        da_req: Dict[str, str] = {"UserId": self.userid}
+        da_req: dict = {"UserId": self.userid}
 
         self.reqid += 1
         self.reqQryTrade(da_req, self.reqid)
 
     def query_position(self) -> None:
         """查询持仓"""
-        da_req: Dict[str, str] = {"AccountNo": self.userid}
+        da_req: dict = {"AccountNo": self.userid}
 
         self.reqid += 1
         self.reqQryTotalPosition(da_req, self.reqid)
@@ -833,7 +827,7 @@ class DaFutureApi(FutureApi):
         pass
 
 
-def get_network_interface():
+def get_network_interface() -> str:
     """获取网络接口"""
     c = wmi.WMI()
     interfaces = c.Win32_NetworkAdapterConfiguration(IPEnabled=1)
@@ -859,7 +853,7 @@ def get_mac_address() -> str:
 
 
 def to_int(data: str) -> int:
-    """"""
+    """字符串转换成整数"""
     if not data:
         return 0
     else:
@@ -867,7 +861,7 @@ def to_int(data: str) -> int:
 
 
 def to_float(data: str) -> float:
-    """"""
+    """字符串转换成浮点数"""
     if not data:
         return 0.0
     else:
