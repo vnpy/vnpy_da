@@ -4,7 +4,7 @@
 </p>
 
 <p align="center">
-    <img src ="https://img.shields.io/badge/version-2.0-blueviolet.svg"/>
+    <img src ="https://img.shields.io/badge/version-1.12.0-blueviolet.svg"/>
     <img src ="https://img.shields.io/badge/platform-windows-yellow.svg"/>
     <img src ="https://img.shields.io/badge/python-3.7-blue.svg" />
     <img src ="https://img.shields.io/github/license/vnpy/vnpy.svg?color=orange"/>
@@ -12,7 +12,7 @@
 
 ## 说明
 
-基于直达期货的2.0接口封装开发的windows接口。
+基于DAApi的1.12版本封装开发的直达期货交易接口。
 
 ## 安装
 
