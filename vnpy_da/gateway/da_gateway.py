@@ -122,6 +122,8 @@ class DaGateway(BaseGateway):
     vn.py用于对接直达期货的接口。
     """
 
+    default_name: str = "DA"
+
     default_setting: Dict[str, str] = {
         "用户名": "",
         "密码": "",
@@ -132,9 +134,9 @@ class DaGateway(BaseGateway):
 
     exchanges: List[str] = list(EXCHANGE_DA2VT.values())
 
-    def __init__(self, event_engine) -> None:
+    def __init__(self, event_engine, gateway_name: str) -> None:
         """构造函数"""
-        super().__init__(event_engine, "DA")
+        super().__init__(event_engine, gateway_name)
 
         self.future_api: "DaFutureApi" = DaFutureApi(self)
         self.market_api: "DaMarketApi" = DaMarketApi(self)
