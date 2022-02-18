@@ -5,8 +5,8 @@ def get_ext_modules() -> list:
     """
     获取三方模块
 
-    Linux和Windows需要编译封装接口
-    Mac由于缺乏二进制库支持无法使用
+    Windows需要编译封装接口
+    Linux和Mac由于缺乏二进制库支持无法使用
     """
     extra_compile_flags = ["-O2", "NOMINMAX"]
     extra_link_args = []
