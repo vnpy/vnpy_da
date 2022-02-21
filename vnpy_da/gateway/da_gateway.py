@@ -119,7 +119,7 @@ account_currency_map: Dict[str, str] = {}
 
 class DaGateway(BaseGateway):
     """
-    vn.py用于对接直达期货的接口。
+    VeighNa用于对接直达期货的接口。
     """
 
     default_name: str = "DA"
@@ -347,7 +347,7 @@ class DaMarketApi(MarketApi):
             "AuthorCode": self.auth_code,
             "MacAddress": self.mac_address,
             "ComputerName": "Dev Server",
-            "SoftwareName": "vn.py",
+            "SoftwareName": "VeighNa",
             "SoftwareVersion": "2.0",
         }
 
@@ -722,7 +722,7 @@ class DaFutureApi(FutureApi):
             "AuthorCode": self.auth_code,
             "MacAddress": self.mac_address,
             "ComputerName": "Dev Server",
-            "SoftwareName": "vn.py",
+            "SoftwareName": "VeighNa",
             "SoftwareVersion": "2.0",
         }
 
