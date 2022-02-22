@@ -8,9 +8,10 @@ def get_ext_modules() -> list:
     Windows需要编译封装接口
     Linux和Mac由于缺乏二进制库支持无法使用
     """
-    extra_compile_flags = ["-O2", "NOMINMAX", "-MT"]
+    extra_compile_flags = ["-O2", "-MT"]
     extra_link_args = []
     runtime_library_dirs = []
+    define_macros=[('NOMINMAX', None)]
 
     vndafuture = Extension(
         "vnpy_da.api.vndafuture",
@@ -19,7 +20,7 @@ def get_ext_modules() -> list:
         ],
         include_dirs=["vnpy_da/api/include",
                       "vnpy_da/api/vnda"],
-        define_macros=[('NOMINMAX', None)],
+        define_macros=define_macros,
         undef_macros=[],
         library_dirs=["vnpy_da/api/libs", "vnpy_da/api"],
         libraries=["DAApi_x64", "vndafuture", "vndamarket", "vndastock"],
@@ -37,7 +38,7 @@ def get_ext_modules() -> list:
         ],
         include_dirs=["vnpy_da/api/include",
                       "vnpy_da/api/vnda"],
-        define_macros=[('NOMINMAX', None)],
+        define_macros=define_macros,
         undef_macros=[],
         library_dirs=["vnpy_da/api/libs", "vnpy_da/api"],
         libraries=["DAApi_x64", "vndafuture", "vndamarket", "vndastock"],
@@ -55,7 +56,7 @@ def get_ext_modules() -> list:
         ],
         include_dirs=["vnpy_da/api/include",
                       "vnpy_da/api/vnda"],
-        define_macros=[('NOMINMAX', None)],
+        define_macros=define_macros,
         undef_macros=[],
         library_dirs=["vnpy_da/api/libs", "vnpy_da/api"],
         libraries=["DAApi_x64", "vndafuture", "vndamarket", "vndastock"],
