@@ -1,22 +1,15 @@
+import wmi
+import pytz
+import requests
 from datetime import datetime
 from copy import copy
 from collections import defaultdict
 from typing import Dict, List, Tuple
 from csv import DictReader
 from io import StringIO
-
 from requests.models import Response
 
-import wmi
-import pytz
-import requests
-
-from ..api import (
-    MarketApi,
-    FutureApi,
-    DAF_SUB_Append,
-    DAF_TYPE_Future
-)
+from vnpy.event import EventEngine
 from vnpy.trader.constant import (
     Direction,
     Offset,
@@ -39,6 +32,13 @@ from vnpy.trader.object import (
     HistoryRequest,
     BarData,
     SubscribeRequest,
+)
+
+from ..api import (
+    MarketApi,
+    FutureApi,
+    DAF_SUB_Append,
+    DAF_TYPE_Future
 )
 
 
@@ -134,7 +134,7 @@ class DaGateway(BaseGateway):
 
     exchanges: List[str] = list(EXCHANGE_DA2VT.values())
 
-    def __init__(self, event_engine, gateway_name: str) -> None:
+    def __init__(self, event_engine: EventEngine, gateway_name: str) -> None:
         """构造函数"""
         super().__init__(event_engine, gateway_name)
 
