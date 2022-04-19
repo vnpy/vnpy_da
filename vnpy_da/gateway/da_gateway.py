@@ -323,9 +323,9 @@ class DaMarketApi(MarketApi):
 
     def connect(self, address: str, userid: str, password: str, auth_code: str) -> None:
         """连接服务器"""
-        self.userid: str = userid
-        self.password: str = password
-        self.auth_code: str = auth_code
+        self.userid = userid
+        self.password = password
+        self.auth_code = auth_code
 
         # 连接
         if not self.connect_status:
@@ -685,9 +685,9 @@ class DaFutureApi(FutureApi):
         auth_code: str
     ) -> None:
         """连接服务器"""
-        self.userid: str = userid
-        self.password: str = password
-        self.auth_code: str = auth_code
+        self.userid = userid
+        self.password = password
+        self.auth_code = auth_code
 
         if not self.connect_status:
             self.createFutureApi(False, "future_log.txt")
