@@ -1,5 +1,4 @@
 import wmi
-import pytz
 import requests
 from datetime import datetime
 from copy import copy
@@ -33,6 +32,7 @@ from vnpy.trader.object import (
     BarData,
     SubscribeRequest,
 )
+from vnpy.trader.utility import ZoneInfo
 
 from ..api import (
     MarketApi,
@@ -108,7 +108,7 @@ OPTIONTYPE_DA2VT: Dict[str, OptionType] = {
 }
 
 # 其他常量
-CHINA_TZ = pytz.timezone("Asia/Shanghai")       # 中国时区
+CHINA_TZ = ZoneInfo("Asia/Shanghai")       # 中国时区
 
 # 全局缓存字典
 symbol_name_map: Dict[str, str] = {}
@@ -200,7 +200,7 @@ class DaGateway(BaseGateway):
         reader: List[dict] = DictReader(StringIO(r.json()))
         for d in reader:
             dt: datetime = datetime.strptime(d["时间"], "%Y-%m-%d %H:%M")
-            dt: datetime = CHINA_TZ.localize(dt)
+            dt: datetime = dt.replace(tzinfo=CHINA_TZ)
 
             bar: BarData = BarData(
                 symbol=req.symbol,
@@ -281,7 +281,7 @@ class DaMarketApi(MarketApi):
             return
 
         dt: datetime = datetime.strptime(data['Time'], "%Y-%m-%d %H:%M:%S")
-        dt: datetime = CHINA_TZ.localize(dt)
+        dt: datetime = dt.replace(tzinfo=CHINA_TZ)
 
         tick: TickData = TickData(
             symbol=symbol,
@@ -456,7 +456,7 @@ class DaFutureApi(FutureApi):
         else:
             timestamp: str = f"{data['OrderDate']} {data['OrderTime']}"
             dt: datetime = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
-            order.datetime = CHINA_TZ.localize(dt)
+            order.datetime = dt.replace(tzinfo=CHINA_TZ)
 
             self.order_info[order.orderid] = (data["OrderNo"], data["SystemNo"])
 
@@ -516,7 +516,7 @@ class DaFutureApi(FutureApi):
         if data["TreatyCode"]:
             timestamp: str = f"{data['OrderDate']} {data['OrderTime']}"
             dt: datetime = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
-            dt: datetime = CHINA_TZ.localize(dt)
+            dt: datetime = dt.replace(tzinfo=CHINA_TZ)
 
             order: OrderData = OrderData(
                 symbol=data["TreatyCode"],
@@ -554,7 +554,7 @@ class DaFutureApi(FutureApi):
         """成交更新推送"""
         timestamp: str = f"{data['FilledDate']} {data['FilledTime']}"
         dt: datetime = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
-        dt: datetime = CHINA_TZ.localize(dt)
+        dt: datetime = dt.replace(tzinfo=CHINA_TZ)
 
         trade: TradeData = TradeData(
             symbol=data["TreatyCode"],
