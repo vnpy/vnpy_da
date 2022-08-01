@@ -1,22 +1,14 @@
+import wmi
+import requests
 from datetime import datetime
 from copy import copy
 from collections import defaultdict
 from typing import Dict, List, Tuple
 from csv import DictReader
 from io import StringIO
-
 from requests.models import Response
 
-import wmi
-import pytz
-import requests
-
-from ..api import (
-    MarketApi,
-    FutureApi,
-    DAF_SUB_Append,
-    DAF_TYPE_Future
-)
+from vnpy.event import EventEngine
 from vnpy.trader.constant import (
     Direction,
     Offset,
@@ -39,6 +31,14 @@ from vnpy.trader.object import (
     HistoryRequest,
     BarData,
     SubscribeRequest,
+)
+from vnpy.trader.utility import ZoneInfo
+
+from ..api import (
+    MarketApi,
+    FutureApi,
+    DAF_SUB_Append,
+    DAF_TYPE_Future
 )
 
 
@@ -108,7 +108,7 @@ OPTIONTYPE_DA2VT: Dict[str, OptionType] = {
 }
 
 # 其他常量
-CHINA_TZ = pytz.timezone("Asia/Shanghai")       # 中国时区
+CHINA_TZ = ZoneInfo("Asia/Shanghai")       # 中国时区
 
 # 全局缓存字典
 symbol_name_map: Dict[str, str] = {}
@@ -134,7 +134,7 @@ class DaGateway(BaseGateway):
 
     exchanges: List[str] = list(EXCHANGE_DA2VT.values())
 
-    def __init__(self, event_engine, gateway_name: str) -> None:
+    def __init__(self, event_engine: EventEngine, gateway_name: str) -> None:
         """构造函数"""
         super().__init__(event_engine, gateway_name)
 
@@ -200,7 +200,7 @@ class DaGateway(BaseGateway):
         reader: List[dict] = DictReader(StringIO(r.json()))
         for d in reader:
             dt: datetime = datetime.strptime(d["时间"], "%Y-%m-%d %H:%M")
-            dt: datetime = CHINA_TZ.localize(dt)
+            dt: datetime = dt.replace(tzinfo=CHINA_TZ)
 
             bar: BarData = BarData(
                 symbol=req.symbol,
@@ -281,7 +281,7 @@ class DaMarketApi(MarketApi):
             return
 
         dt: datetime = datetime.strptime(data['Time'], "%Y-%m-%d %H:%M:%S")
-        dt: datetime = CHINA_TZ.localize(dt)
+        dt: datetime = dt.replace(tzinfo=CHINA_TZ)
 
         tick: TickData = TickData(
             symbol=symbol,
@@ -323,9 +323,9 @@ class DaMarketApi(MarketApi):
 
     def connect(self, address: str, userid: str, password: str, auth_code: str) -> None:
         """连接服务器"""
-        self.userid: str = userid
-        self.password: str = password
-        self.auth_code: str = auth_code
+        self.userid = userid
+        self.password = password
+        self.auth_code = auth_code
 
         # 连接
         if not self.connect_status:
@@ -456,7 +456,7 @@ class DaFutureApi(FutureApi):
         else:
             timestamp: str = f"{data['OrderDate']} {data['OrderTime']}"
             dt: datetime = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
-            order.datetime = CHINA_TZ.localize(dt)
+            order.datetime = dt.replace(tzinfo=CHINA_TZ)
 
             self.order_info[order.orderid] = (data["OrderNo"], data["SystemNo"])
 
@@ -516,7 +516,7 @@ class DaFutureApi(FutureApi):
         if data["TreatyCode"]:
             timestamp: str = f"{data['OrderDate']} {data['OrderTime']}"
             dt: datetime = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
-            dt: datetime = CHINA_TZ.localize(dt)
+            dt: datetime = dt.replace(tzinfo=CHINA_TZ)
 
             order: OrderData = OrderData(
                 symbol=data["TreatyCode"],
@@ -554,7 +554,7 @@ class DaFutureApi(FutureApi):
         """成交更新推送"""
         timestamp: str = f"{data['FilledDate']} {data['FilledTime']}"
         dt: datetime = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
-        dt: datetime = CHINA_TZ.localize(dt)
+        dt: datetime = dt.replace(tzinfo=CHINA_TZ)
 
         trade: TradeData = TradeData(
             symbol=data["TreatyCode"],
@@ -685,9 +685,9 @@ class DaFutureApi(FutureApi):
         auth_code: str
     ) -> None:
         """连接服务器"""
-        self.userid: str = userid
-        self.password: str = password
-        self.auth_code: str = auth_code
+        self.userid = userid
+        self.password = password
+        self.auth_code = auth_code
 
         if not self.connect_status:
             self.createFutureApi(False, "future_log.txt")
