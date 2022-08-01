@@ -16,7 +16,7 @@ def get_ext_modules() -> list:
     extra_compile_flags = ["-O2", "-MT"]
     extra_link_args = []
     runtime_library_dirs = []
-    define_macros=[('NOMINMAX', None)]
+    define_macros = [('NOMINMAX', None)]
 
     vndafuture = Extension(
         "vnpy_da.api.vndafuture",

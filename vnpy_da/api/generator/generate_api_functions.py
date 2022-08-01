@@ -243,7 +243,7 @@ class ApiGenerator:
                 f.write("\t}\n")
                 f.write("\tcatch (const error_already_set &e)\n")
                 f.write("\t{\n")
-                f.write(f"\t\tcout << e.what() << endl;\n")
+                f.write("\t\tcout << e.what() << endl;\n")
                 f.write("\t}\n")
                 f.write("};\n\n")
 
