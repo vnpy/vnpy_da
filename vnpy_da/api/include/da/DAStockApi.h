@@ -10,92 +10,95 @@
 
 #include "DAStockStruct.h"
 
-class IStockEvent
-{
-	//×´Ì¬º¯Êý
-public:
-	virtual void OnFrontConnected() {};
-	virtual void OnFrontDisconnected(int iReason) {};
-	virtual void OnHeartBeatWarning(int iTimeLapse) {};
+namespace Directaccess {
 
-	//ÇëÇóº¯Êý
-public:
-	virtual void OnRspNeedVerify(bool bFirstLogin, bool bHasSetQA) {}
-	virtual void OnRspUserLogin(CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
-	virtual void OnRspUserLogout(CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
-	virtual void OnRspVerifyCode(CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
-	virtual void OnRspSafeVerify(CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
-	virtual void OnRspSetVerifyQA(CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
-	virtual void OnRspAccount(CStockRspAccountField *pRspAccount, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
-	virtual void OnRspQuestion(CStockRspQuestionField *pRspQuestion, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
-	virtual void OnRspOrderInsert(CStockRspOrderInsertField *pRspOrderInsert, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
-	virtual void OnRspOrderModify(CStockRspOrderModifyField *pRspOrderModify, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
-	virtual void OnRspOrderCancel(CStockRspOrderCancelField *pRspOrderCancel, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
-	virtual void OnRspPasswordUpdate(CStockRspPasswordUpdateField *pRspPasswordUpdate, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+	class IStockEvent
+	{
+		//×´Ì¬ï¿½ï¿½ï¿½ï¿½
+	public:
+		virtual void OnFrontConnected() {};
+		virtual void OnFrontDisconnected(int iReason) {};
+		virtual void OnHeartBeatWarning(int iTimeLapse) {};
 
-	//ÍÆËÍº¯Êý
-public:
-	virtual void OnRtnTrade(CStockRtnTradeField *pRtnTrade, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
-	virtual void OnRtnOrder(CStockRtnOrderField *pRtnOrder, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
-	virtual void OnRtnCapital(CStockRtnCapitalField *pRtnCapital, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
-	virtual void OnRtnPosition(CStockRtnPositionField *pRtnPosition, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	public:
+		virtual void OnRspNeedVerify(bool bFirstLogin, bool bHasSetQA) {}
+		virtual void OnRspUserLogin(CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+		virtual void OnRspUserLogout(CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+		virtual void OnRspVerifyCode(CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+		virtual void OnRspSafeVerify(CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+		virtual void OnRspSetVerifyQA(CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+		virtual void OnRspAccount(CStockRspAccountField *pRspAccount, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+		virtual void OnRspQuestion(CStockRspQuestionField *pRspQuestion, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+		virtual void OnRspOrderInsert(CStockRspOrderInsertField *pRspOrderInsert, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+		virtual void OnRspOrderModify(CStockRspOrderModifyField *pRspOrderModify, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+		virtual void OnRspOrderCancel(CStockRspOrderCancelField *pRspOrderCancel, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+		virtual void OnRspPasswordUpdate(CStockRspPasswordUpdateField *pRspPasswordUpdate, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
 
-	//²éÑ¯º¯Êý
-public:
-	virtual void OnRspQryTick(CStockRspTickField *pRspTick, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
-	virtual void OnRspQryOrder(CStockRspOrderField *pRspOrder, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
-	virtual void OnRspQryTrade(CStockRspTradeField *pRspTrade, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
-	virtual void OnRspQryCapital(CStockRspCapitalField *pRspCapital, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
-	virtual void OnRspQryVersion(CStockRspVersionField *pRspVersion, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
-	virtual void OnRspQryPosition(CStockRspPositionField *pRspPosition, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
-	virtual void OnRspQryCurrency(CStockRspCurrencyField *pRspCurrency, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
-	virtual void OnRspQryExchange(CStockRspExchangeField *pRspExchange, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
-	virtual void OnRspQryInstrument(CStockRspInstrumentField *pRspInstrument, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
-};
+		//ï¿½ï¿½ï¿½Íºï¿½ï¿½ï¿½
+	public:
+		virtual void OnRtnTrade(CStockRtnTradeField *pRtnTrade, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+		virtual void OnRtnOrder(CStockRtnOrderField *pRtnOrder, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+		virtual void OnRtnCapital(CStockRtnCapitalField *pRtnCapital, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+		virtual void OnRtnPosition(CStockRtnPositionField *pRtnPosition, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
 
-class DA_API_EXPORT CStockApi
-{
-	// ¾²Ì¬º¯Êý
-public:
-	static const char *GetVersion();
-	static CStockApi *CreateStockApi(bool bRecordLog, const char* lpszLogFileName = "Stock.log");
+		//ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½
+	public:
+		virtual void OnRspQryTick(CStockRspTickField *pRspTick, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+		virtual void OnRspQryOrder(CStockRspOrderField *pRspOrder, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+		virtual void OnRspQryTrade(CStockRspTradeField *pRspTrade, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+		virtual void OnRspQryCapital(CStockRspCapitalField *pRspCapital, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+		virtual void OnRspQryVersion(CStockRspVersionField *pRspVersion, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+		virtual void OnRspQryPosition(CStockRspPositionField *pRspPosition, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+		virtual void OnRspQryCurrency(CStockRspCurrencyField *pRspCurrency, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+		virtual void OnRspQryExchange(CStockRspExchangeField *pRspExchange, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+		virtual void OnRspQryInstrument(CStockRspInstrumentField *pRspInstrument, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
+	};
 
-	// ¹¹Ôìº¯Êý
-public:
-	CStockApi() {};
-	virtual ~CStockApi() {};
+	class DA_API_EXPORT CStockApi
+	{
+		// ï¿½ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½
+	public:
+		static const char *GetVersion();
+		static CStockApi *CreateStockApi(bool bRecordLog, const char* lpszLogFileName = "Stock.log", const char*lpszLogFileDir = "");
 
-	// ³õÊ¼»¯º¯Êý
-public:
-	virtual bool Init() = 0;
-	virtual void Release() = 0;
-	virtual void SetHeartbeatTimeout(int iTimeout) = 0;
-	virtual void RegisterSpi(IStockEvent *pIStockEvent) = 0;
-	virtual void RegisterNameServer(const char *pszNsAddress) = 0;
+		// ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½
+	public:
+		CStockApi() {};
+		virtual ~CStockApi() {};
 
-	// ÇëÇóº¯Êý
-public:
-	virtual bool ReqUserLogin(CStockReqUserLoginField *pReqUserLogin, int iRequestID) = 0;
-	virtual bool ReqUserLogout(CStockReqUserLogoutField *pReqUserLogout, int iRequestID) = 0;
-	virtual bool ReqSafeVerify(CStockReqSafeVerifyField *pReqSafeVerify, int iRequestID) = 0;
-	virtual bool ReqVerifyCode(CStockReqVerifyCodeField *pReqVerifyCode, int iRequestID) = 0;
-	virtual bool ReqSetVerifyQA(CStockReqSetVerifyQAField *pReqSetVerifyQA, int iRequestID) = 0;
-	virtual bool ReqGetQuestion(CStockReqGetQuestionField *pReqGetQuestion, int iRequestID) = 0;
-	virtual bool ReqOrderInsert(CStockReqOrderInsertField *pReqOrderInsert, int iRequestID) = 0;
-	virtual bool ReqOrderModify(CStockReqOrderModifyField *pReqOrderModify, int iRequestID) = 0;
-	virtual bool ReqOrderCancel(CStockReqOrderCancelField *pReqOrderCancel, int iRequestID) = 0;
-	virtual bool ReqPasswordUpdate(CStockReqPasswordUpdateField *pReqPasswordUpdate, int iRequestID) = 0;
+		// ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	public:
+		virtual bool Init() = 0;
+		virtual void Release() = 0;
+		virtual void SetHeartBeatTimeout(int iTimeout) = 0;
+		virtual void RegisterSpi(IStockEvent *pIStockEvent) = 0;
+		virtual void RegisterNameServer(const char *pszNsAddress) = 0;
 
-	// ²éÑ¯º¯Êý
-public:
-	virtual bool ReqQryTick(CStockQryTickField *pQryTick, int iRequestID) = 0;
-	virtual bool ReqQryOrder(CStockQryOrderField *pQryOrder, int iRequestID) = 0;
-	virtual bool ReqQryTrade(CStockQryTradeField *pQryTrade, int iRequestID) = 0;
-	virtual bool ReqQryCapital(CStockQryCapitalField *pQryCapital, int iRequestID) = 0;
-	virtual bool ReqQryVersion(CStockQryVersionField *pQryVersion, int iRequestID) = 0;
-	virtual bool ReqQryPosition(CStockQryPositionField *pQryPosition, int iRequestID) = 0;
-	virtual bool ReqQryCurrency(CStockQryCurrencyField *pQryCurrency, int iRequestID) = 0;
-	virtual bool ReqQryExchange(CStockQryExchangeField *pQryExchange, int iRequestID) = 0;
-	virtual bool ReqQryInstrument(CStockQryInstrumentField *pQryInstrument, int iRequestID) = 0;
-};
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	public:
+		virtual bool ReqUserLogin(CStockReqUserLoginField *pReqUserLogin, int iRequestID) = 0;
+		virtual bool ReqUserLogout(CStockReqUserLogoutField *pReqUserLogout, int iRequestID) = 0;
+		virtual bool ReqSafeVerify(CStockReqSafeVerifyField *pReqSafeVerify, int iRequestID) = 0;
+		virtual bool ReqVerifyCode(CStockReqVerifyCodeField *pReqVerifyCode, int iRequestID) = 0;
+		virtual bool ReqSetVerifyQA(CStockReqSetVerifyQAField *pReqSetVerifyQA, int iRequestID) = 0;
+		virtual bool ReqGetQuestion(CStockReqGetQuestionField *pReqGetQuestion, int iRequestID) = 0;
+		virtual bool ReqOrderInsert(CStockReqOrderInsertField *pReqOrderInsert, int iRequestID) = 0;
+		virtual bool ReqOrderModify(CStockReqOrderModifyField *pReqOrderModify, int iRequestID) = 0;
+		virtual bool ReqOrderCancel(CStockReqOrderCancelField *pReqOrderCancel, int iRequestID) = 0;
+		virtual bool ReqPasswordUpdate(CStockReqPasswordUpdateField *pReqPasswordUpdate, int iRequestID) = 0;
 
+		// ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½
+	public:
+		virtual bool ReqQryTick(CStockQryTickField *pQryTick, int iRequestID) = 0;
+		virtual bool ReqQryOrder(CStockQryOrderField *pQryOrder, int iRequestID) = 0;
+		virtual bool ReqQryTrade(CStockQryTradeField *pQryTrade, int iRequestID) = 0;
+		virtual bool ReqQryCapital(CStockQryCapitalField *pQryCapital, int iRequestID) = 0;
+		virtual bool ReqQryVersion(CStockQryVersionField *pQryVersion, int iRequestID) = 0;
+		virtual bool ReqQryPosition(CStockQryPositionField *pQryPosition, int iRequestID) = 0;
+		virtual bool ReqQryCurrency(CStockQryCurrencyField *pQryCurrency, int iRequestID) = 0;
+		virtual bool ReqQryExchange(CStockQryExchangeField *pQryExchange, int iRequestID) = 0;
+		virtual bool ReqQryInstrument(CStockQryInstrumentField *pQryInstrument, int iRequestID) = 0;
+	};
+
+}
