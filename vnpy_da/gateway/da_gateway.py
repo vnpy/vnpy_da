@@ -1,12 +1,8 @@
 import wmi
-import requests
 from datetime import datetime
 from copy import copy
 from collections import defaultdict
 from typing import Dict, List, Tuple
-from csv import DictReader
-from io import StringIO
-from requests.models import Response
 
 from vnpy.event import EventEngine
 from vnpy.trader.constant import (
@@ -28,8 +24,6 @@ from vnpy.trader.object import (
     ContractData,
     OrderRequest,
     CancelRequest,
-    HistoryRequest,
-    BarData,
     SubscribeRequest,
 )
 from vnpy.trader.utility import ZoneInfo
@@ -176,47 +170,6 @@ class DaGateway(BaseGateway):
     def query_position(self) -> None:
         """查询持仓"""
         pass
-
-    def query_history(self, req: HistoryRequest) -> List[BarData]:
-        """查询历史数据"""
-        path: str = "http://222.73.120.40:8609/api/HistoryQuote"
-
-        params: dict = {
-            "type": "M1",
-            "exchangeNo": EXCHANGE_VT2DA[req.exchange],
-            "symbol": req.symbol,
-            "startTime": req.start.strftime("%Y-%m-%d"),
-            "count": ""
-        }
-
-        if req.end:
-            params["endTime"] = req.end.strftime("%Y-%m-%d")
-
-        headers: dict = {"Accept-Encoding": "gzip"}
-
-        r: Response = requests.get(path, headers=headers, params=params)
-
-        bars: List[BarData] = []
-        reader: List[dict] = DictReader(StringIO(r.json()))
-        for d in reader:
-            dt: datetime = datetime.strptime(d["时间"], "%Y-%m-%d %H:%M")
-            dt: datetime = dt.replace(tzinfo=CHINA_TZ)
-
-            bar: BarData = BarData(
-                symbol=req.symbol,
-                exchange=req.exchange,
-                interval=req.interval,
-                datetime=dt,
-                open_price=float(d["开盘价"]),
-                high_price=float(d["最高价"]),
-                low_price=float(d["最低价"]),
-                close_price=float(d["收盘价"]),
-                volume=int(d["成交量"]),
-                gateway_name=self.gateway_name
-            )
-            bars.append(bar)
-
-        return bars
 
     def close(self) -> None:
         """关闭接口"""
@@ -490,7 +443,6 @@ class DaFutureApi(FutureApi):
                 product=product,
                 size=data["ProductDot"] / data["UpperTick"],
                 pricetick=data["UpperTick"],
-                history_data=True,
                 gateway_name=self.gateway_name
             )
 
