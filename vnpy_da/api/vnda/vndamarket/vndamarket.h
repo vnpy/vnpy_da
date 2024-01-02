@@ -11,6 +11,7 @@
 
 using namespace pybind11;
 using namespace std;
+using namespace Directaccess;
 
 ///-------------------------------------------------------------------------------------
 ///C++ SPI的回调函数方法实现
@@ -35,31 +36,34 @@ public:
 	void OnFrontDisconnected(int iReason);
 	void OnHeartBeatWarning(int iTimeLapse);
 
-	void OnRspRawData(const char *rawData);
-	void OnRspUserLogin(CMarketRspInfoField *pRspInfo, int iRequestID, bool bIsLast);
-	void OnRspTradeDate(CMarketRspTradeDateField *pRspTradeDate, CMarketRspInfoField *pRspInfo, int iRequestID, bool bIsLast);
-	void OnRspBrokerData(CMarketRspBrokerDataField *pRspBrokerData, CMarketRspInfoField *pRspInfo, int iRequestID, bool bIsLast);
-	void OnRspMarketData(CMarketRspMarketDataField *pRspMarketData, CMarketRspInfoField *pRspInfo, int iRequestID, bool bIsLast);
+	void OnRspRawData(const char* rawData);
+	void OnRspUserLogin(CMarketRspInfoField* pRspInfo, int iRequestID, bool bIsLast);
+	void OnRspTradeDate(CMarketRspTradeDateField* pRspTradeDate, CMarketRspInfoField* pRspInfo, int iRequestID, bool bIsLast);
+	void OnRspBrokerData(CMarketRspBrokerDataField* pRspBrokerData, CMarketRspInfoField* pRspInfo, int iRequestID, bool bIsLast);
+	void OnRspMarketData(CMarketRspMarketDataField* pRspMarketData, CMarketRspInfoField* pRspInfo, int iRequestID, bool bIsLast);
+	void OnRspUserLogout(CMarketRspInfoField* pRspInfo, int iRequestID, bool bIsLast);
 
 	//-------------------------------------------------------------------------------------
 	//Python回调函数
 	//-------------------------------------------------------------------------------------
 
-	virtual void onFrontConnected(){};
+	virtual void onFrontConnected() {};
 
-	virtual void onFrontDisconnected(int reqid){};
+	virtual void onFrontDisconnected(int reqid) {};
 
-	virtual void onHeartBeatWarning(int reqid){};
+	virtual void onHeartBeatWarning(int reqid) {};
 
-	virtual void onRspRawData(string data){};
+	virtual void onRspRawData(string rawData) {};
 
-	virtual void onRspUserLogin(const dict &error, int reqid, bool last){};
+	virtual void onRspUserLogin(const dict& error, int reqid, bool last) {};
 
-	virtual void onRspTradeDate(const dict &data, const dict &error, int reqid, bool last){};
+	virtual void onRspTradeDate(const dict& data, const dict& error, int reqid, bool last) {};
 
-	virtual void onRspBrokerData(const dict &data, const dict &error, int reqid, bool last){};
+	virtual void onRspBrokerData(const dict& data, const dict& error, int reqid, bool last) {};
 
-	virtual void onRspMarketData(const dict &data, const dict &error, int reqid, bool last){};
+	virtual void onRspMarketData(const dict& data, const dict& error, int reqid, bool last) {};
+
+	virtual void onRspUserLogout(const dict& error, int reqid, bool last) {};
 
 	//-------------------------------------------------------------------------------------
 	//req:主动函数的请求字典
@@ -76,13 +80,13 @@ public:
 
 	int exit();
 
-	void setHeartbeatTimeout(int timeout);
+	void setHeartBeatTimeout(int timeout, bool isStrictCheck = true);
 
 	void registerNameServer(string address);
 
-	int reqUserLogin(const dict &req, int reqid);
+	int reqUserLogin(const dict& req, int reqid);
 
-	int reqBrokerData(const dict &req, int reqid);
+	int reqBrokerData(const dict& req, int reqid);
 
-	int reqMarketData(const dict &req, int reqid);
+	int reqMarketData(const dict& req, int reqid);
 };

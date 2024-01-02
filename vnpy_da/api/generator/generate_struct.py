@@ -38,26 +38,27 @@ class StructGenerator:
 
     def process_line(self, line: str):
         """处理每行"""
-        line = line.replace(";", "")
-        line = line.replace("\n", "")
+        line_ = line.replace(";", "")
+        line_ = line_.replace("\n", "")
+        line_ = line_.split("//")[0]
 
-        if line.startswith("typedef"):
-            self.process_typedef(line)
-        elif line.startswith("struct"):
-            self.process_declare(line)
-        elif line.startswith("{"):
-            self.process_start(line)
-        elif line.startswith("}"):
-            self.process_end(line)
-        elif "\t" in line and "///" not in line:
-            self.process_member(line)
+        if "typedef" in line_:
+            self.process_typedef(line_)
+        elif "struct" in line_:
+            self.process_declare(line_)
+        elif "{" in line_:
+            self.process_start(line_)
+        elif "};" in line:
+            self.process_end(line_)
+        elif "\t" in line_ and "/" not in line_ and "#" not in line_ and line_:
+            self.process_member(line_)
 
     def process_typedef(self, line: str):
         """处理类型定义"""
         line = line.replace("\t", " ")
         words = line.split(" ")
-        name = words[1]
-        value = words[2]
+        name = words[-2]
+        value = words[-1]
         new_line = f"{value} = {name}\n\n"
         self.f_struct.write(new_line)
 
@@ -81,8 +82,12 @@ class StructGenerator:
 
     def process_member(self, line: str):
         """处理成员"""
+        line = line.replace(" ", "\t")
         words = line.split("\t")
         words = [word.replace(" ", "") for word in words if word]
+        if not words:
+            return
+
         py_type = self.typedefs[words[0]]
         name = words[1]
 

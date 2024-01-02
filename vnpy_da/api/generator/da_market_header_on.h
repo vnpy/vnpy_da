@@ -14,3 +14,5 @@ virtual void onRspBrokerData(const dict &data, const dict &error, int reqid, boo
 
 virtual void onRspMarketData(const dict &data, const dict &error, int reqid, bool last) {};
 
+virtual void onRspUserLogout(const dict &error, int reqid, bool last) {};
+

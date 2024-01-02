@@ -11,6 +11,7 @@ int MarketApi::reqUserLogin(const dict &req, int reqid)
 	getString(req, "SoftwareVersion", myreq.SoftwareVersion);
 	getString(req, "AuthorCode", myreq.AuthorCode);
 	getString(req, "ErrorDescription", myreq.ErrorDescription);
+	getString(req, "BrokerIDForMarketPrice", myreq.BrokerIDForMarketPrice);
 	int i = this->api->ReqUserLogin(&myreq, reqid);
 	return i;
 };

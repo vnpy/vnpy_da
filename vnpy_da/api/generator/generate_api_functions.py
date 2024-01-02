@@ -62,6 +62,7 @@ class ApiGenerator:
     def process_callback(self, line: str):
         """处理回掉函数"""
         name = line[line.index("On"):line.index("(")]
+        line = line.replace(") ", "")
         self.lines[name] = line
 
         d = self.generate_arg_dict(line)
@@ -162,6 +163,7 @@ class ApiGenerator:
 
                         f.write("\t}\n")
                     else:
+                        type_ = type_.replace("*", "")
                         args.append("data")
 
                         f.write("\tdict data;\n")
@@ -189,7 +191,7 @@ class ApiGenerator:
         with open(filename, "w") as f:
             for name, d in self.functions.items():
                 req_name = name.replace("Req", "req")
-                type_ = list(d.values())[0]
+                type_ = list(d.values())[0].replace("*", "")
 
                 f.write(
                     f"int {self.class_name}::{req_name}(const dict &req, int reqid)\n")

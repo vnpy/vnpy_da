@@ -1,16 +1,16 @@
-void FutureApi::OnFrontConnected()
+void FutureApi::OnFrontConnected() 
 {
 	gil_scoped_acquire acquire;
 	this->onFrontConnected();
 };
 
-void FutureApi::OnFrontDisconnected(int iReason)
+void FutureApi::OnFrontDisconnected(int iReason) 
 {
 	gil_scoped_acquire acquire;
 	this->onFrontDisconnected(iReason);
 };
 
-void FutureApi::OnHeartBeatWarning(int iTimeLapse)
+void FutureApi::OnHeartBeatWarning(int iTimeLapse) 
 {
 	gil_scoped_acquire acquire;
 	this->onHeartBeatWarning(iTimeLapse);
@@ -175,33 +175,25 @@ void FutureApi::OnRspOrderInsert(CFutureRspOrderInsertField *pRspOrderInsert, CF
 		data["SystemNo"] = toUtf(pRspOrderInsert->SystemNo);
 		data["LocalNo"] = toUtf(pRspOrderInsert->LocalNo);
 		data["OrderNo"] = toUtf(pRspOrderInsert->OrderNo);
-		data["OrigOrderNo"] = toUtf(pRspOrderInsert->OrigOrderNo);
-		data["OrderMethod"] = toUtf(pRspOrderInsert->OrderMethod);
-		data["AcceptType"] = toUtf(pRspOrderInsert->AcceptType);
 		data["ExchangeCode"] = toUtf(pRspOrderInsert->ExchangeCode);
-		data["TreatyCode"] = toUtf(pRspOrderInsert->TreatyCode);
-		data["BuySale"] = toUtf(pRspOrderInsert->BuySale);
-		data["OrderNumber"] = toUtf(pRspOrderInsert->OrderNumber);
+		data["ContractCode"] = toUtf(pRspOrderInsert->ContractCode);
+		data["BidAskFlag"] = toUtf(pRspOrderInsert->BidAskFlag);
+		data["OrderQty"] = toUtf(pRspOrderInsert->OrderQty);
 		data["OrderPrice"] = toUtf(pRspOrderInsert->OrderPrice);
-		data["FilledNumber"] = toUtf(pRspOrderInsert->FilledNumber);
-		data["FilledPrice"] = toUtf(pRspOrderInsert->FilledPrice);
-		data["TradeType"] = toUtf(pRspOrderInsert->TradeType);
-		data["PriceType"] = toUtf(pRspOrderInsert->PriceType);
-		data["HtsType"] = toUtf(pRspOrderInsert->HtsType);
+		data["OrderType"] = toUtf(pRspOrderInsert->OrderType);
 		data["OrderDate"] = toUtf(pRspOrderInsert->OrderDate);
 		data["OrderTime"] = toUtf(pRspOrderInsert->OrderTime);
 		data["ErrorCode"] = toUtf(pRspOrderInsert->ErrorCode);
 		data["OrderState"] = toUtf(pRspOrderInsert->OrderState);
-		data["IsRiskOrder"] = toUtf(pRspOrderInsert->IsRiskOrder);
-		data["CancelUserId"] = toUtf(pRspOrderInsert->CancelUserId);
 		data["TriggerPrice"] = toUtf(pRspOrderInsert->TriggerPrice);
-		data["ValidDate"] = toUtf(pRspOrderInsert->ValidDate);
-		data["AddReduce"] = toUtf(pRspOrderInsert->AddReduce);
+		data["TIF"] = toUtf(pRspOrderInsert->TIF);
+		data["OpenCloseFlag"] = toUtf(pRspOrderInsert->OpenCloseFlag);
 		data["StrategyId"] = toUtf(pRspOrderInsert->StrategyId);
 		data["MaxShow"] = toUtf(pRspOrderInsert->MaxShow);
 		data["MinQty"] = toUtf(pRspOrderInsert->MinQty);
 		data["ExchangeTime"] = toUtf(pRspOrderInsert->ExchangeTime);
-		data["CancelTime"] = toUtf(pRspOrderInsert->CancelTime);
+		data["OrdSourceType"] = toUtf(pRspOrderInsert->OrdSourceType);
+		data["Tag50"] = toUtf(pRspOrderInsert->Tag50);
 	}
 	dict error;
 	if (pRspInfo)
@@ -223,33 +215,25 @@ void FutureApi::OnRspOrderModify(CFutureRspOrderModifyField *pRspOrderModify, CF
 		data["SystemNo"] = toUtf(pRspOrderModify->SystemNo);
 		data["LocalNo"] = toUtf(pRspOrderModify->LocalNo);
 		data["OrderNo"] = toUtf(pRspOrderModify->OrderNo);
-		data["OrigOrderNo"] = toUtf(pRspOrderModify->OrigOrderNo);
-		data["OrderMethod"] = toUtf(pRspOrderModify->OrderMethod);
-		data["AcceptType"] = toUtf(pRspOrderModify->AcceptType);
 		data["ExchangeCode"] = toUtf(pRspOrderModify->ExchangeCode);
-		data["TreatyCode"] = toUtf(pRspOrderModify->TreatyCode);
-		data["BuySale"] = toUtf(pRspOrderModify->BuySale);
-		data["OrderNumber"] = toUtf(pRspOrderModify->OrderNumber);
+		data["ContractCode"] = toUtf(pRspOrderModify->ContractCode);
+		data["BidAskFlag"] = toUtf(pRspOrderModify->BidAskFlag);
+		data["OrderQty"] = toUtf(pRspOrderModify->OrderQty);
 		data["OrderPrice"] = toUtf(pRspOrderModify->OrderPrice);
-		data["FilledNumber"] = toUtf(pRspOrderModify->FilledNumber);
-		data["FilledPrice"] = toUtf(pRspOrderModify->FilledPrice);
-		data["TradeType"] = toUtf(pRspOrderModify->TradeType);
-		data["PriceType"] = toUtf(pRspOrderModify->PriceType);
-		data["HtsType"] = toUtf(pRspOrderModify->HtsType);
+		data["OrderType"] = toUtf(pRspOrderModify->OrderType);
 		data["OrderDate"] = toUtf(pRspOrderModify->OrderDate);
 		data["OrderTime"] = toUtf(pRspOrderModify->OrderTime);
 		data["ErrorCode"] = toUtf(pRspOrderModify->ErrorCode);
 		data["OrderState"] = toUtf(pRspOrderModify->OrderState);
-		data["IsRiskOrder"] = toUtf(pRspOrderModify->IsRiskOrder);
-		data["CancelUserId"] = toUtf(pRspOrderModify->CancelUserId);
 		data["TriggerPrice"] = toUtf(pRspOrderModify->TriggerPrice);
-		data["ValidDate"] = toUtf(pRspOrderModify->ValidDate);
-		data["AddReduce"] = toUtf(pRspOrderModify->AddReduce);
+		data["TIF"] = toUtf(pRspOrderModify->TIF);
+		data["OpenCloseFlag"] = toUtf(pRspOrderModify->OpenCloseFlag);
 		data["StrategyId"] = toUtf(pRspOrderModify->StrategyId);
 		data["MaxShow"] = toUtf(pRspOrderModify->MaxShow);
 		data["MinQty"] = toUtf(pRspOrderModify->MinQty);
 		data["ExchangeTime"] = toUtf(pRspOrderModify->ExchangeTime);
-		data["CancelTime"] = toUtf(pRspOrderModify->CancelTime);
+		data["OrdSourceType"] = toUtf(pRspOrderModify->OrdSourceType);
+		data["Tag50"] = toUtf(pRspOrderModify->Tag50);
 	}
 	dict error;
 	if (pRspInfo)
@@ -273,19 +257,18 @@ void FutureApi::OnRspOrderCancel(CFutureRspOrderCancelField *pRspOrderCancel, CF
 		data["OrderNo"] = toUtf(pRspOrderCancel->OrderNo);
 		data["CancelNo"] = toUtf(pRspOrderCancel->CancelNo);
 		data["ExchangeCode"] = toUtf(pRspOrderCancel->ExchangeCode);
-		data["TreatyCode"] = toUtf(pRspOrderCancel->TreatyCode);
-		data["BuySale"] = toUtf(pRspOrderCancel->BuySale);
-		data["OrderNumber"] = toUtf(pRspOrderCancel->OrderNumber);
+		data["ContractCode"] = toUtf(pRspOrderCancel->ContractCode);
+		data["BidAskFlag"] = toUtf(pRspOrderCancel->BidAskFlag);
+		data["OrderQty"] = toUtf(pRspOrderCancel->OrderQty);
 		data["OrderPrice"] = toUtf(pRspOrderCancel->OrderPrice);
-		data["FilledNumber"] = toUtf(pRspOrderCancel->FilledNumber);
-		data["CancelNumber"] = toUtf(pRspOrderCancel->CancelNumber);
-		data["TradeType"] = toUtf(pRspOrderCancel->TradeType);
-		data["PriceType"] = toUtf(pRspOrderCancel->PriceType);
-		data["HtsType"] = toUtf(pRspOrderCancel->HtsType);
-		data["CancelDate"] = toUtf(pRspOrderCancel->CancelDate);
-		data["CancelTime"] = toUtf(pRspOrderCancel->CancelTime);
+		data["FilledQty"] = toUtf(pRspOrderCancel->FilledQty);
+		data["CancelledQty"] = toUtf(pRspOrderCancel->CancelledQty);
+		data["OrderType"] = toUtf(pRspOrderCancel->OrderType);
+		data["CancelledDate"] = toUtf(pRspOrderCancel->CancelledDate);
+		data["CancelledTime"] = toUtf(pRspOrderCancel->CancelledTime);
 		data["ErrorCode"] = toUtf(pRspOrderCancel->ErrorCode);
-		data["IsRiskOrder"] = toUtf(pRspOrderCancel->IsRiskOrder);
+		data["OrdSourceType"] = toUtf(pRspOrderCancel->OrdSourceType);
+		data["Tag50"] = toUtf(pRspOrderCancel->Tag50);
 	}
 	dict error;
 	if (pRspInfo)
@@ -359,28 +342,28 @@ void FutureApi::OnRtnOrder(CFutureRtnOrderField *pRtnOrder, CFutureRspInfoField 
 	dict data;
 	if (pRtnOrder)
 	{
-		data["LocalOrderNo"] = toUtf(pRtnOrder->LocalOrderNo);
-		data["ExchangeNo"] = toUtf(pRtnOrder->ExchangeNo);
-		data["TreatyCode"] = toUtf(pRtnOrder->TreatyCode);
+		data["LocalNo"] = toUtf(pRtnOrder->LocalNo);
+		data["ExchangeCode"] = toUtf(pRtnOrder->ExchangeCode);
+		data["ContractCode"] = toUtf(pRtnOrder->ContractCode);
 		data["OrderNo"] = toUtf(pRtnOrder->OrderNo);
-		data["OrderNumber"] = pRtnOrder->OrderNumber;
-		data["FilledNumber"] = pRtnOrder->FilledNumber;
-		data["FilledAdvPrice"] = pRtnOrder->FilledAdvPrice;
-		data["BuyHoldNumber"] = pRtnOrder->BuyHoldNumber;
-		data["BuyHoldOpenPrice"] = pRtnOrder->BuyHoldOpenPrice;
-		data["BuyHoldPrice"] = pRtnOrder->BuyHoldPrice;
-		data["SaleHoldNumber"] = pRtnOrder->SaleHoldNumber;
-		data["SaleHoldOpenPrice"] = pRtnOrder->SaleHoldOpenPrice;
-		data["SaleHoldPrice"] = pRtnOrder->SaleHoldPrice;
+		data["OrderQty"] = pRtnOrder->OrderQty;
+		data["FilledQty"] = pRtnOrder->FilledQty;
+		data["FilledAvgPrice"] = pRtnOrder->FilledAvgPrice;
+		data["LongPositionQty"] = pRtnOrder->LongPositionQty;
+		data["LongPosAveragePrx"] = pRtnOrder->LongPosAveragePrx;
+		data["CNLongPosAveragePrx"] = pRtnOrder->CNLongPosAveragePrx;
+		data["ShortPositionQty"] = pRtnOrder->ShortPositionQty;
+		data["ShortPosAveragePrx"] = pRtnOrder->ShortPosAveragePrx;
+		data["CNShortPosAveragePrx"] = pRtnOrder->CNShortPosAveragePrx;
 		data["IsCanceled"] = toUtf(pRtnOrder->IsCanceled);
 		data["FilledTotalFee"] = pRtnOrder->FilledTotalFee;
-		data["Status"] = pRtnOrder->Status;
+		data["SequenceNo"] = pRtnOrder->SequenceNo;
 		data["AccountNo"] = toUtf(pRtnOrder->AccountNo);
-		data["HoldType"] = toUtf(pRtnOrder->HoldType);
-		data["HoldMarginBuy"] = pRtnOrder->HoldMarginBuy;
-		data["HoldMarginSale"] = pRtnOrder->HoldMarginSale;
+		data["PositionType"] = toUtf(pRtnOrder->PositionType);
+		data["LongPosMargin"] = pRtnOrder->LongPosMargin;
+		data["ShortPosMargin"] = pRtnOrder->ShortPosMargin;
 		data["CurrPrice"] = pRtnOrder->CurrPrice;
-		data["FloatProfit"] = pRtnOrder->FloatProfit;
+		data["ProfitLoss"] = pRtnOrder->ProfitLoss;
 	}
 	dict error;
 	if (pRspInfo)
@@ -459,28 +442,28 @@ void FutureApi::OnRtnPosition(CFutureRtnPositionField *pRtnPosition, CFutureRspI
 	dict data;
 	if (pRtnPosition)
 	{
-		data["LocalOrderNo"] = toUtf(pRtnPosition->LocalOrderNo);
-		data["ExchangeNo"] = toUtf(pRtnPosition->ExchangeNo);
-		data["TreatyCode"] = toUtf(pRtnPosition->TreatyCode);
+		data["LocalNo"] = toUtf(pRtnPosition->LocalNo);
+		data["ExchangeCode"] = toUtf(pRtnPosition->ExchangeCode);
+		data["ContractCode"] = toUtf(pRtnPosition->ContractCode);
 		data["OrderNo"] = toUtf(pRtnPosition->OrderNo);
-		data["OrderNumber"] = pRtnPosition->OrderNumber;
-		data["FilledNumber"] = pRtnPosition->FilledNumber;
-		data["FilledAdvPrice"] = pRtnPosition->FilledAdvPrice;
-		data["BuyHoldNumber"] = pRtnPosition->BuyHoldNumber;
-		data["BuyHoldOpenPrice"] = pRtnPosition->BuyHoldOpenPrice;
-		data["BuyHoldPrice"] = pRtnPosition->BuyHoldPrice;
-		data["SaleHoldNumber"] = pRtnPosition->SaleHoldNumber;
-		data["SaleHoldOpenPrice"] = pRtnPosition->SaleHoldOpenPrice;
-		data["SaleHoldPrice"] = pRtnPosition->SaleHoldPrice;
+		data["OrderQty"] = pRtnPosition->OrderQty;
+		data["FilledQty"] = pRtnPosition->FilledQty;
+		data["FilledAvgPrice"] = pRtnPosition->FilledAvgPrice;
+		data["LongPositionQty"] = pRtnPosition->LongPositionQty;
+		data["LongPosAveragePrx"] = pRtnPosition->LongPosAveragePrx;
+		data["CNLongPosAveragePrx"] = pRtnPosition->CNLongPosAveragePrx;
+		data["ShortPositionQty"] = pRtnPosition->ShortPositionQty;
+		data["ShortPosAveragePrx"] = pRtnPosition->ShortPosAveragePrx;
+		data["CNShortPosAveragePrx"] = pRtnPosition->CNShortPosAveragePrx;
 		data["IsCanceled"] = toUtf(pRtnPosition->IsCanceled);
 		data["FilledTotalFee"] = pRtnPosition->FilledTotalFee;
-		data["Status"] = pRtnPosition->Status;
+		data["SequenceNo"] = pRtnPosition->SequenceNo;
 		data["AccountNo"] = toUtf(pRtnPosition->AccountNo);
-		data["HoldType"] = toUtf(pRtnPosition->HoldType);
-		data["HoldMarginBuy"] = pRtnPosition->HoldMarginBuy;
-		data["HoldMarginSale"] = pRtnPosition->HoldMarginSale;
+		data["PositionType"] = toUtf(pRtnPosition->PositionType);
+		data["LongPosMargin"] = pRtnPosition->LongPosMargin;
+		data["ShortPosMargin"] = pRtnPosition->ShortPosMargin;
 		data["CurrPrice"] = pRtnPosition->CurrPrice;
-		data["FloatProfit"] = pRtnPosition->FloatProfit;
+		data["ProfitLoss"] = pRtnPosition->ProfitLoss;
 	}
 	dict error;
 	if (pRspInfo)
@@ -502,28 +485,22 @@ void FutureApi::OnRspQryOrder(CFutureRspOrderField *pRspOrder, CFutureRspInfoFie
 		data["SystemNo"] = toUtf(pRspOrder->SystemNo);
 		data["LocalNo"] = toUtf(pRspOrder->LocalNo);
 		data["OrderNo"] = toUtf(pRspOrder->OrderNo);
-		data["OrigOrderNo"] = toUtf(pRspOrder->OrigOrderNo);
-		data["OrderMethod"] = toUtf(pRspOrder->OrderMethod);
-		data["AcceptType"] = toUtf(pRspOrder->AcceptType);
 		data["ExchangeCode"] = toUtf(pRspOrder->ExchangeCode);
-		data["TreatyCode"] = toUtf(pRspOrder->TreatyCode);
-		data["BuySale"] = toUtf(pRspOrder->BuySale);
-		data["OrderNumber"] = toUtf(pRspOrder->OrderNumber);
+		data["ContractCode"] = toUtf(pRspOrder->ContractCode);
+		data["BidAskFlag"] = toUtf(pRspOrder->BidAskFlag);
+		data["OrderQty"] = toUtf(pRspOrder->OrderQty);
 		data["OrderPrice"] = toUtf(pRspOrder->OrderPrice);
-		data["FilledNumber"] = toUtf(pRspOrder->FilledNumber);
+		data["FilledQty"] = toUtf(pRspOrder->FilledQty);
 		data["FilledPrice"] = toUtf(pRspOrder->FilledPrice);
-		data["TradeType"] = toUtf(pRspOrder->TradeType);
-		data["PriceType"] = toUtf(pRspOrder->PriceType);
-		data["HtsType"] = toUtf(pRspOrder->HtsType);
+		data["OrderType"] = toUtf(pRspOrder->OrderType);
 		data["OrderDate"] = toUtf(pRspOrder->OrderDate);
 		data["OrderTime"] = toUtf(pRspOrder->OrderTime);
 		data["ErrorCode"] = toUtf(pRspOrder->ErrorCode);
 		data["OrderState"] = toUtf(pRspOrder->OrderState);
-		data["IsRiskOrder"] = toUtf(pRspOrder->IsRiskOrder);
 		data["CancelUserId"] = toUtf(pRspOrder->CancelUserId);
 		data["TriggerPrice"] = toUtf(pRspOrder->TriggerPrice);
-		data["ValidDate"] = toUtf(pRspOrder->ValidDate);
-		data["AddReduce"] = toUtf(pRspOrder->AddReduce);
+		data["TIF"] = toUtf(pRspOrder->TIF);
+		data["OpenCloseFlag"] = toUtf(pRspOrder->OpenCloseFlag);
 		data["StrategyId"] = toUtf(pRspOrder->StrategyId);
 		data["MaxShow"] = toUtf(pRspOrder->MaxShow);
 		data["MinQty"] = toUtf(pRspOrder->MinQty);
@@ -584,46 +561,31 @@ void FutureApi::OnRspQryCapital(CFutureRspCapitalField *pRspCapital, CFutureRspI
 	if (pRspCapital)
 	{
 		data["UserId"] = toUtf(pRspCapital->UserId);
-		data["InMoney"] = toUtf(pRspCapital->InMoney);
-		data["OutMoney"] = toUtf(pRspCapital->OutMoney);
-		data["TodayCanUse"] = toUtf(pRspCapital->TodayCanUse);
-		data["TodayAmount"] = toUtf(pRspCapital->TodayAmount);
-		data["TodayBalance"] = toUtf(pRspCapital->TodayBalance);
-		data["FreezenMoney"] = toUtf(pRspCapital->FreezenMoney);
+		data["Deposit"] = toUtf(pRspCapital->Deposit);
+		data["Withdraw"] = toUtf(pRspCapital->Withdraw);
+		data["TodayTradableFund"] = toUtf(pRspCapital->TodayTradableFund);
+		data["TodayInitialBalance"] = toUtf(pRspCapital->TodayInitialBalance);
+		data["TodayRealtimeBalance"] = toUtf(pRspCapital->TodayRealtimeBalance);
+		data["FrozenFund"] = toUtf(pRspCapital->FrozenFund);
 		data["Commission"] = toUtf(pRspCapital->Commission);
-		data["Margin"] = toUtf(pRspCapital->Margin);
-		data["OldCanUse"] = toUtf(pRspCapital->OldCanUse);
-		data["OldAmount"] = toUtf(pRspCapital->OldAmount);
-		data["OldBalance"] = toUtf(pRspCapital->OldBalance);
-		data["FloatingProfit"] = toUtf(pRspCapital->FloatingProfit);
+		data["InitialMargin"] = toUtf(pRspCapital->InitialMargin);
+		data["YdTradableFund"] = toUtf(pRspCapital->YdTradableFund);
+		data["YdInitialBalance"] = toUtf(pRspCapital->YdInitialBalance);
+		data["YdFinalBalance"] = toUtf(pRspCapital->YdFinalBalance);
+		data["ProfitLoss"] = toUtf(pRspCapital->ProfitLoss);
 		data["CurrencyNo"] = toUtf(pRspCapital->CurrencyNo);
 		data["CurrencyRate"] = pRspCapital->CurrencyRate;
-		data["UnexpiredProfit"] = pRspCapital->UnexpiredProfit;
-		data["UnaccountProfit"] = pRspCapital->UnaccountProfit;
-		data["KeepDeposit"] = pRspCapital->KeepDeposit;
-		data["Royalty"] = pRspCapital->Royalty;
-		data["Credit"] = pRspCapital->Credit;
-		data["AddCapital"] = pRspCapital->AddCapital;
-		data["IniEquity"] = pRspCapital->IniEquity;
-		data["AccountNo"] = toUtf(pRspCapital->AccountNo);
-		data["MortgageMoney"] = pRspCapital->MortgageMoney;
-		data["MarginLimit"] = pRspCapital->MarginLimit;
-		data["BorrowValue"] = pRspCapital->BorrowValue;
-		data["T1"] = pRspCapital->T1;
-		data["T2"] = pRspCapital->T2;
-		data["T3"] = pRspCapital->T3;
-		data["TN"] = pRspCapital->TN;
+		data["LMEUnexpiredPL"] = pRspCapital->LMEUnexpiredPL;
+		data["LMEUnaccountPL"] = pRspCapital->LMEUnaccountPL;
+		data["MaintenanceMargin"] = pRspCapital->MaintenanceMargin;
+		data["Premium"] = pRspCapital->Premium;
+		data["CreditAmount"] = pRspCapital->CreditAmount;
+		data["IntialFund"] = pRspCapital->IntialFund;
+		data["FundAccountNo"] = toUtf(pRspCapital->FundAccountNo);
 		data["TradeLimit"] = pRspCapital->TradeLimit;
-		data["CanCashOut"] = pRspCapital->CanCashOut;
-		data["AccruedCrInt"] = pRspCapital->AccruedCrInt;
-		data["AccruedDrInt"] = pRspCapital->AccruedDrInt;
-		data["CrossMax"] = pRspCapital->CrossMax;
-		data["SellFreezenMoney"] = pRspCapital->SellFreezenMoney;
-		data["SellInterest"] = pRspCapital->SellInterest;
-		data["SellNeedAddMargin"] = pRspCapital->SellNeedAddMargin;
-		data["NetProfit"] = toUtf(pRspCapital->NetProfit);
-		data["ProfitRate"] = toUtf(pRspCapital->ProfitRate);
-		data["RiskRate"] = toUtf(pRspCapital->RiskRate);
+		data["CanCashOutMoneyAmount"] = pRspCapital->CanCashOutMoneyAmount;
+		data["DepositInterest"] = pRspCapital->DepositInterest;
+		data["LoanInterest"] = pRspCapital->LoanInterest;
 		data["ErrorDescription"] = toUtf(pRspCapital->ErrorDescription);
 	}
 	dict error;
@@ -737,35 +699,45 @@ void FutureApi::OnRspQryStrategy(CFutureRspStrategyField *pRspStrategy, CFutureR
 	dict data;
 	if (pRspStrategy)
 	{
-		data["UserId"] = toUtf(pRspStrategy->UserId);
-		data["KeyId"] = toUtf(pRspStrategy->KeyId);
-		data["Name"] = toUtf(pRspStrategy->Name);
-		data["Code"] = toUtf(pRspStrategy->Code);
-		data["PriceType"] = pRspStrategy->PriceType;
-		data["PriceTypeDetailType"] = pRspStrategy->PriceTypeDetailType;
-		data["PriceFormula"] = toUtf(pRspStrategy->PriceFormula);
-		data["TriggerMethod"] = pRspStrategy->TriggerMethod;
-		data["InnerProtect"] = pRspStrategy->InnerProtect;
-		data["PassiveFailCloseMainLeg"] = pRspStrategy->PassiveFailCloseMainLeg;
-		data["SlipPoint"] = pRspStrategy->SlipPoint;
-		data["RecoverPriceMethod"] = pRspStrategy->RecoverPriceMethod;
-		data["RecoverPriceSeconds"] = pRspStrategy->RecoverPriceSeconds;
-		data["SetType"] = toUtf(pRspStrategy->SetType);
-		data["MinChangePrice"] = pRspStrategy->MinChangePrice;
-		data["MaxNum"] = pRspStrategy->MaxNum;
-		data["SuportQuantity"] = pRspStrategy->SuportQuantity;
-		data["SafeDeep"] = pRspStrategy->SafeDeep;
-		data["MainRange"] = pRspStrategy->MainRange;
-		data["ManualZhuiDanBeyondNum"] = toUtf(pRspStrategy->ManualZhuiDanBeyondNum);
-		data["ManualPingZhuDongBeyondNum"] = toUtf(pRspStrategy->ManualPingZhuDongBeyondNum);
-		data["AutoGuaDanSeconds"] = pRspStrategy->AutoGuaDanSeconds;
-		data["AutoZhuiBeiDongDots"] = pRspStrategy->AutoZhuiBeiDongDots;
-		data["AutoPingZhuDongDots"] = pRspStrategy->AutoPingZhuDongDots;
-		data["AutoZhiSunDot"] = pRspStrategy->AutoZhiSunDot;
-		data["AutoZhiSunZhuiBeiDongDots"] = pRspStrategy->AutoZhiSunZhuiBeiDongDots;
-		data["AutoZhiSunPingZhuDongDots"] = pRspStrategy->AutoZhiSunPingZhuDongDots;
-		data["DotLen"] = pRspStrategy->DotLen;
-		data["TradeTime"] = toUtf(pRspStrategy->TradeTime);
+		data["CommodityCode"] = toUtf(pRspStrategy->CommodityCode);
+		data["ExchangeNo"] = toUtf(pRspStrategy->ExchangeNo);
+		data["ContractNo"] = toUtf(pRspStrategy->ContractNo);
+		data["ContractFName"] = toUtf(pRspStrategy->ContractFName);
+		data["CommodityNo"] = toUtf(pRspStrategy->CommodityNo);
+		data["CommodityFName"] = toUtf(pRspStrategy->CommodityFName);
+		data["CommodityType"] = toUtf(pRspStrategy->CommodityType);
+		data["CommodityFCurrencyNo"] = toUtf(pRspStrategy->CommodityFCurrencyNo);
+		data["CurrencyFName"] = toUtf(pRspStrategy->CurrencyFName);
+		data["ProductDot"] = pRspStrategy->ProductDot;
+		data["UpperTick"] = pRspStrategy->UpperTick;
+		data["ExchangeName"] = toUtf(pRspStrategy->ExchangeName);
+		data["LastSettlePrice"] = pRspStrategy->LastSettlePrice;
+		data["TradeMonth"] = toUtf(pRspStrategy->TradeMonth);
+		data["DotNum"] = pRspStrategy->DotNum;
+		data["LowerTick"] = pRspStrategy->LowerTick;
+		data["DotNumCarry"] = pRspStrategy->DotNumCarry;
+		data["UpperTickCarry"] = pRspStrategy->UpperTickCarry;
+		data["FirstNoticeDay"] = toUtf(pRspStrategy->FirstNoticeDay);
+		data["FreezenPercent"] = pRspStrategy->FreezenPercent;
+		data["FreezenMoney"] = pRspStrategy->FreezenMoney;
+		data["FeeMoney"] = pRspStrategy->FeeMoney;
+		data["FeePercent"] = pRspStrategy->FeePercent;
+		data["PriceStrike"] = pRspStrategy->PriceStrike;
+		data["ProductDotStrike"] = pRspStrategy->ProductDotStrike;
+		data["UpperTickStrike"] = pRspStrategy->UpperTickStrike;
+		data["LastTradeDay"] = toUtf(pRspStrategy->LastTradeDay);
+		data["LastUpdateDay"] = toUtf(pRspStrategy->LastUpdateDay);
+		data["CriticalPrice"] = pRspStrategy->CriticalPrice;
+		data["CriticalMinChangedPrice"] = pRspStrategy->CriticalMinChangedPrice;
+		data["ExchangeSub"] = toUtf(pRspStrategy->ExchangeSub);
+		data["OptionType"] = toUtf(pRspStrategy->OptionType);
+		data["OptionMonth"] = toUtf(pRspStrategy->OptionMonth);
+		data["OptionStrikePrice"] = toUtf(pRspStrategy->OptionStrikePrice);
+		data["OptionCommodityNo"] = toUtf(pRspStrategy->OptionCommodityNo);
+		data["OptionContractNo"] = toUtf(pRspStrategy->OptionContractNo);
+		data["ContractFNameEN"] = toUtf(pRspStrategy->ContractFNameEN);
+		data["CommodityFNameEN"] = toUtf(pRspStrategy->CommodityFNameEN);
+		data["OptionStyle"] = toUtf(pRspStrategy->OptionStyle);
 	}
 	dict error;
 	if (pRspInfo)
@@ -908,34 +880,34 @@ void FutureApi::OnRspQryCommodityTime(CFutureRspCommodityTimeField *pRspCommodit
 	this->onRspQryCommodityTime(data, error, iRequestID, bIsLast);
 };
 
-void FutureApi::OnRspQryTotalPosition(CFutureRspTotalPositionField *pRspTotalPosition, CFutureRspInfoField *pRspInfo, int iRequestID, bool bIsLast) 
+void FutureApi::OnRspQryTotalPosition(CFutureRspTotalPositionField* pRspTotalPosition, CFutureRspInfoField *pRspInfo, int iRequestID, bool bIsLast) 
 {
 	gil_scoped_acquire acquire;
 	dict data;
 	if (pRspTotalPosition)
 	{
-		data["LocalOrderNo"] = toUtf(pRspTotalPosition->LocalOrderNo);
-		data["ExchangeNo"] = toUtf(pRspTotalPosition->ExchangeNo);
-		data["TreatyCode"] = toUtf(pRspTotalPosition->TreatyCode);
+		data["LocalNo"] = toUtf(pRspTotalPosition->LocalNo);
+		data["ExchangeCode"] = toUtf(pRspTotalPosition->ExchangeCode);
+		data["ContractCode"] = toUtf(pRspTotalPosition->ContractCode);
 		data["OrderNo"] = toUtf(pRspTotalPosition->OrderNo);
-		data["OrderNumber"] = pRspTotalPosition->OrderNumber;
-		data["FilledNumber"] = pRspTotalPosition->FilledNumber;
-		data["FilledAdvPrice"] = pRspTotalPosition->FilledAdvPrice;
-		data["BuyHoldNumber"] = pRspTotalPosition->BuyHoldNumber;
-		data["BuyHoldOpenPrice"] = pRspTotalPosition->BuyHoldOpenPrice;
-		data["BuyHoldPrice"] = pRspTotalPosition->BuyHoldPrice;
-		data["SaleHoldNumber"] = pRspTotalPosition->SaleHoldNumber;
-		data["SaleHoldOpenPrice"] = pRspTotalPosition->SaleHoldOpenPrice;
-		data["SaleHoldPrice"] = pRspTotalPosition->SaleHoldPrice;
+		data["OrderQty"] = pRspTotalPosition->OrderQty;
+		data["FilledQty"] = pRspTotalPosition->FilledQty;
+		data["FilledAvgPrice"] = pRspTotalPosition->FilledAvgPrice;
+		data["LongPositionQty"] = pRspTotalPosition->LongPositionQty;
+		data["LongPosAveragePrx"] = pRspTotalPosition->LongPosAveragePrx;
+		data["CNLongPosAveragePrx"] = pRspTotalPosition->CNLongPosAveragePrx;
+		data["ShortPositionQty"] = pRspTotalPosition->ShortPositionQty;
+		data["ShortPosAveragePrx"] = pRspTotalPosition->ShortPosAveragePrx;
+		data["CNShortPosAveragePrx"] = pRspTotalPosition->CNShortPosAveragePrx;
 		data["IsCanceled"] = toUtf(pRspTotalPosition->IsCanceled);
 		data["FilledTotalFee"] = pRspTotalPosition->FilledTotalFee;
-		data["Status"] = pRspTotalPosition->Status;
+		data["SequenceNo"] = pRspTotalPosition->SequenceNo;
 		data["AccountNo"] = toUtf(pRspTotalPosition->AccountNo);
-		data["HoldType"] = toUtf(pRspTotalPosition->HoldType);
-		data["HoldMarginBuy"] = pRspTotalPosition->HoldMarginBuy;
-		data["HoldMarginSale"] = pRspTotalPosition->HoldMarginSale;
+		data["PositionType"] = toUtf(pRspTotalPosition->PositionType);
+		data["LongPosMargin"] = pRspTotalPosition->LongPosMargin;
+		data["ShortPosMargin"] = pRspTotalPosition->ShortPosMargin;
 		data["CurrPrice"] = pRspTotalPosition->CurrPrice;
-		data["FloatProfit"] = pRspTotalPosition->FloatProfit;
+		data["ProfitLoss"] = pRspTotalPosition->ProfitLoss;
 	}
 	dict error;
 	if (pRspInfo)
@@ -946,7 +918,7 @@ void FutureApi::OnRspQryTotalPosition(CFutureRspTotalPositionField *pRspTotalPos
 	this->onRspQryTotalPosition(data, error, iRequestID, bIsLast);
 };
 
-void FutureApi::OnRspQryStrategyDetail(CFutureRspStrategyDetailField *pRspStrategyDetail, CFutureRspInfoField *pRspInfo, int iRequestID, bool bIsLast) 
+void FutureApi::OnRspQryStrategyDetail(CFutureRspStrategyDetailField* pRspStrategyDetail, CFutureRspInfoField *pRspInfo, int iRequestID, bool bIsLast) 
 {
 	gil_scoped_acquire acquire;
 	dict data;
