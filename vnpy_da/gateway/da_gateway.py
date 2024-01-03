@@ -639,7 +639,7 @@ class DaFutureApi(FutureApi):
         self.auth_code = auth_code
 
         if not self.connect_status:
-            self.createFutureApi(False, "future_log.txt")
+            self.createFutureApi(False, "future_log.txt", "")
 
             self.registerNameServer(address)
             self.init()
