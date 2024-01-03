@@ -698,7 +698,7 @@ class DaFutureApi(FutureApi):
         order: OrderData = self.orders[req.orderid]
 
         if order.orderid not in self.order_info:
-            msg = f"撤单失败，尚未收到服务端返回的委托信息{order.orderid}"
+            msg: str = f"撤单失败，尚未收到服务端返回的委托信息{order.orderid}"
             self.gateway.write_log(msg)
             return
 
@@ -710,10 +710,9 @@ class DaFutureApi(FutureApi):
             "UserId": self.userid,
             "LocalNo": req.orderid,
             "AccountNo": account_no,
-            "TradePwd": self.password,
             "ExchangeCode": EXCHANGE_VT2DA[req.exchange],
-            "TreatyCode": req.symbol,
-            "BuySale": DIRECTION_VT2DA[order.direction],
+            "ContractCode": req.symbol,
+            "BidAskFlag": DIRECTION_VT2DA[order.direction],
             "OrderNo": order_no,
             "SystemNo": system_no
         }
