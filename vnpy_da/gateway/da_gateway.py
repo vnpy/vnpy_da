@@ -32,7 +32,8 @@ from ..api import (
     MarketApi,
     FutureApi,
     DAF_SUB_Append,
-    DAF_TYPE_Future
+    DAF_TYPE_Future,
+    DERIVATIVE_TDY_TIF
 )
 
 
@@ -673,14 +674,13 @@ class DaFutureApi(FutureApi):
             "UserId": self.userid,
             "AccountNo": account_no,
             "LocalNo": str(self.local_no),
-            "TradePwd": self.password,
             "ExchangeCode": EXCHANGE_VT2DA[req.exchange],
-            "TreatyCode": req.symbol,
-            "BuySale": DIRECTION_VT2DA[req.direction],
+            "ContractCode": req.symbol,
+            "BidAskFlag": DIRECTION_VT2DA[req.direction],
             "OrderPrice": str(req.price),
-            "OrderNumber": str(int(req.volume)),
-            "PriceType": ORDERTYPE_VT2DA[req.type],
-            "ValidDate": "1"
+            "OrderQty": str(int(req.volume)),
+            "OrderType": ORDERTYPE_VT2DA[req.type],
+            "TIF": DERIVATIVE_TDY_TIF
         }
 
         self.reqid += 1
