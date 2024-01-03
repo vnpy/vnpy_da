@@ -58,7 +58,6 @@ DIRECTION_VT2DA: Dict[Direction, str] = {
 }
 DIRECTION_DA2VT: Dict[str, Direction] = {v: k for k, v in DIRECTION_VT2DA.items()}
 
-
 # 委托类型映射
 ORDERTYPE_VT2DA: Dict[OrderType, str] = {
     OrderType.LIMIT: "1",
@@ -398,6 +397,7 @@ class DaFutureApi(FutureApi):
 
     def onRspAccount(self, data: dict, error: dict, reqid: int, last: bool) -> None:
         """用户登录回报"""
+        print("onRspAccount", data)
         currency_account_map[data["CurrencyNo"]] = data["AccountNo"]
         account_currency_map[data["AccountNo"]] = data["CurrencyNo"]
 

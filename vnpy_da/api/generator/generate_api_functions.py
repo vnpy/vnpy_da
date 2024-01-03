@@ -62,7 +62,6 @@ class ApiGenerator:
     def process_callback(self, line: str):
         """处理回掉函数"""
         name = line[line.index("On"):line.index("(")]
-        line = line.replace(") ", "")
         self.lines[name] = line
 
         d = self.generate_arg_dict(line)
@@ -120,7 +119,7 @@ class ApiGenerator:
         with open(filename, "w") as f:
             for name in self.functions.keys():
                 name = name.replace("Req", "req")
-                line = f"int {name}(const dict &req, int reqid);\n\n"
+                line = f"bool {name}(const dict &req, int reqid);\n\n"
                 f.write(line)
 
     def generate_source_task(self):
@@ -194,7 +193,7 @@ class ApiGenerator:
                 type_ = list(d.values())[0].replace("*", "")
 
                 f.write(
-                    f"int {self.class_name}::{req_name}(const dict &req, int reqid)\n")
+                    f"bool {self.class_name}::{req_name}(const dict &req, int reqid)\n")
                 f.write("{\n")
                 f.write(f"\t{type_} myreq = {type_}();\n")
                 f.write("\tmemset(&myreq, 0, sizeof(myreq));\n")
@@ -207,7 +206,7 @@ class ApiGenerator:
                         line = f"\tget{struct_type.capitalize()}(req, \"{struct_field}\", &myreq.{struct_field});\n"
                     f.write(line)
 
-                f.write(f"\tint i = this->api->{name}(&myreq, reqid);\n")
+                f.write(f"\tbool i = this->api->{name}(&myreq, reqid);\n")
                 f.write("\treturn i;\n")
                 f.write("};\n\n")
 

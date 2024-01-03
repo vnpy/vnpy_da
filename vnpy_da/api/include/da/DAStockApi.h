@@ -14,13 +14,13 @@ namespace Directaccess {
 
 	class IStockEvent
 	{
-		//×´Ì¬ï¿½ï¿½ï¿½ï¿½
+		//×´Ì¬º¯Êý
 	public:
 		virtual void OnFrontConnected() {};
 		virtual void OnFrontDisconnected(int iReason) {};
 		virtual void OnHeartBeatWarning(int iTimeLapse) {};
 
-		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//ÇëÇóº¯Êý
 	public:
 		virtual void OnRspNeedVerify(bool bFirstLogin, bool bHasSetQA) {}
 		virtual void OnRspUserLogin(CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
@@ -35,14 +35,14 @@ namespace Directaccess {
 		virtual void OnRspOrderCancel(CStockRspOrderCancelField *pRspOrderCancel, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
 		virtual void OnRspPasswordUpdate(CStockRspPasswordUpdateField *pRspPasswordUpdate, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
 
-		//ï¿½ï¿½ï¿½Íºï¿½ï¿½ï¿½
+		//ÍÆËÍº¯Êý
 	public:
 		virtual void OnRtnTrade(CStockRtnTradeField *pRtnTrade, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
 		virtual void OnRtnOrder(CStockRtnOrderField *pRtnOrder, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
 		virtual void OnRtnCapital(CStockRtnCapitalField *pRtnCapital, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
 		virtual void OnRtnPosition(CStockRtnPositionField *pRtnPosition, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
 
-		//ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½
+		//²éÑ¯º¯Êý
 	public:
 		virtual void OnRspQryTick(CStockRspTickField *pRspTick, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
 		virtual void OnRspQryOrder(CStockRspOrderField *pRspOrder, CStockRspInfoField *pRspInfo, int iRequestID, bool bIsLast) {}
@@ -57,17 +57,17 @@ namespace Directaccess {
 
 	class DA_API_EXPORT CStockApi
 	{
-		// ï¿½ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½
+		// ¾²Ì¬º¯Êý
 	public:
 		static const char *GetVersion();
 		static CStockApi *CreateStockApi(bool bRecordLog, const char* lpszLogFileName = "Stock.log", const char*lpszLogFileDir = "");
 
-		// ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½
+		// ¹¹Ôìº¯Êý
 	public:
 		CStockApi() {};
 		virtual ~CStockApi() {};
 
-		// ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		// ³õÊ¼»¯º¯Êý
 	public:
 		virtual bool Init() = 0;
 		virtual void Release() = 0;
@@ -75,7 +75,7 @@ namespace Directaccess {
 		virtual void RegisterSpi(IStockEvent *pIStockEvent) = 0;
 		virtual void RegisterNameServer(const char *pszNsAddress) = 0;
 
-		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		// ÇëÇóº¯Êý
 	public:
 		virtual bool ReqUserLogin(CStockReqUserLoginField *pReqUserLogin, int iRequestID) = 0;
 		virtual bool ReqUserLogout(CStockReqUserLogoutField *pReqUserLogout, int iRequestID) = 0;
@@ -88,7 +88,7 @@ namespace Directaccess {
 		virtual bool ReqOrderCancel(CStockReqOrderCancelField *pReqOrderCancel, int iRequestID) = 0;
 		virtual bool ReqPasswordUpdate(CStockReqPasswordUpdateField *pReqPasswordUpdate, int iRequestID) = 0;
 
-		// ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½
+		// ²éÑ¯º¯Êý
 	public:
 		virtual bool ReqQryTick(CStockQryTickField *pQryTick, int iRequestID) = 0;
 		virtual bool ReqQryOrder(CStockQryOrderField *pQryOrder, int iRequestID) = 0;
