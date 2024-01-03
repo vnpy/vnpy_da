@@ -447,9 +447,14 @@ class DaFutureApi(FutureApi):
             )
 
             if product == Product.OPTION:
+                underlying_symbol: str = data["OptionCommodityNo"]
+
+                contract.option_portfolio = underlying_symbol + "_O"
                 contract.option_type = OPTIONTYPE_DA2VT[data["OptionType"]]
                 contract.option_strike = to_float(data["OptionStrikePrice"])
+                contract.option_index = data["OptionStrikePrice"]
                 contract.option_expiry = datetime.strptime(data["LastTradeDay"], "%Y%m%d")
+                contract.option_underlying = data["OptionContractNo"]
 
             symbol_name_map[contract.vt_symbol] = contract.name
             symbol_currency_map[contract.symbol] = data["CommodityFCurrencyNo"]
