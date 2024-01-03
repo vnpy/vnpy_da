@@ -394,6 +394,11 @@ class DaFutureApi(FutureApi):
         """请求需要验证回报"""
         print("on rsp need verify", firstLogin, hasSetQA)
 
+    def onRspAccount(self, data: dict, error: dict, reqid: int, last: bool) -> None:
+        """用户登录回报"""
+        currency_account_map[data["CurrencyNo"]] = data["AccountNo"]
+        account_currency_map[data["AccountNo"]] = data["CurrencyNo"]
+
     def onRspOrderInsert(self, data: dict, error: dict, reqid: int, last: bool) -> None:
         """委托下单回报"""
         if not data["OrderNo"]:
@@ -519,13 +524,11 @@ class DaFutureApi(FutureApi):
         """资金查询回报"""
         account: AccountData = AccountData(
             accountid=data["CurrencyNo"],
-            balance=float(data["TodayBalance"]),
-            frozen=float(data["FreezenMoney"]),
+            balance=float(data["TodayRealtimeBalance"]),
+            frozen=float(data["FrozenFund"]),
             gateway_name=self.gateway_name
         )
 
-        currency_account_map[data["CurrencyNo"]] = data["AccountNo"]
-        account_currency_map[data["AccountNo"]] = data["CurrencyNo"]
         self.gateway.on_account(account)
 
         if last:
