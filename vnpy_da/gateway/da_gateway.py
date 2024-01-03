@@ -124,7 +124,8 @@ class DaGateway(BaseGateway):
         "密码": "",
         "交易服务器": "",
         "行情服务器": "",
-        "授权码": ""
+        "授权码": "",
+        "行情经纪商识别号": ""
     }
 
     exchanges: List[str] = list(EXCHANGE_DA2VT.values())
@@ -143,6 +144,7 @@ class DaGateway(BaseGateway):
         future_address: str = setting["交易服务器"]
         market_address: str = setting["行情服务器"]
         auth_code: str = setting["授权码"]
+        brokerid: str = setting["行情经纪商识别号"]
 
         if not future_address.startswith("tcp://"):
             future_address: str = "tcp://" + future_address
@@ -150,7 +152,7 @@ class DaGateway(BaseGateway):
             market_address: str = "tcp://" + market_address
 
         self.future_api.connect(future_address, userid, password, auth_code)
-        self.market_api.connect(market_address, userid, password, auth_code)
+        self.market_api.connect(market_address, userid, password, auth_code, brokerid)
 
     def subscribe(self, req: SubscribeRequest) -> None:
         """订阅行情"""
@@ -205,6 +207,7 @@ class DaMarketApi(MarketApi):
         self.userid: str = ""
         self.password: str = ""
         self.auth_code: str = ""
+        self.brokerid: str = ""
 
     def onFrontConnected(self) -> None:
         """服务器连接成功回报"""
@@ -275,11 +278,12 @@ class DaMarketApi(MarketApi):
         tick.name = symbol_name_map[tick.vt_symbol]
         self.gateway.on_tick(tick)
 
-    def connect(self, address: str, userid: str, password: str, auth_code: str) -> None:
+    def connect(self, address: str, userid: str, password: str, auth_code: str, brokerid: str) -> None:
         """连接服务器"""
         self.userid = userid
         self.password = password
         self.auth_code = auth_code
+        self.brokerid = brokerid
 
         # 连接
         if not self.connect_status:
@@ -303,6 +307,7 @@ class DaMarketApi(MarketApi):
             "ComputerName": "Dev Server",
             "SoftwareName": "VeighNa",
             "SoftwareVersion": "3.0",
+            "BrokerIDForMarketPrice" : self.brokerid
         }
 
         self.reqid += 1
