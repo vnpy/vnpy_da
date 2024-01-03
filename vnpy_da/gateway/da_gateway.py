@@ -82,11 +82,7 @@ EXCHANGE_DA2VT: Dict[str, Exchange] = {
     "LME": Exchange.LME,
     "SGXQ": Exchange.SGX,
     "HKEX": Exchange.HKFE,
-    "APEX": Exchange.APEX,
-    "CFFEX": Exchange.CFFEX,
-    "SHFE": Exchange.SHFE,
-    "DCE": Exchange.DCE,
-    "CZCE": Exchange.CZCE
+    "APEX": Exchange.APEX
 }
 EXCHANGE_VT2DA: Dict[Exchange, str] = {v: k for k, v in EXCHANGE_DA2VT.items()}
 
