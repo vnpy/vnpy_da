@@ -421,13 +421,6 @@ class DaFutureApi(FutureApi):
         if errorid:
             self.gateway.write_error("交易撤单失败", error)
 
-    def onRspSettlementInfoConfirm(self, data: dict, error: dict, reqid: int, last: bool) -> None:
-        """结算信息确认回报"""
-        self.gateway.write_log("结算信息确认成功")
-
-        self.reqid += 1
-        self.reqQryInstrument({}, self.reqid)
-
     def onRspQryInstrument(self, data: dict, error: dict, reqid: int, last: bool) -> None:
         """机构查询回报"""
         if error["ErrorID"]:
@@ -650,21 +643,6 @@ class DaFutureApi(FutureApi):
             self.connect_status = True
         else:
             self.login()
-
-    def authenticate(self) -> None:
-        """发起授权验证"""
-        req: dict = {
-            "UserID": self.userid,
-            "BrokerID": self.brokerid,
-            "AuthCode": self.auth_code,
-            "AppID": self.appid
-        }
-
-        if self.product_info:
-            req["UserProductInfo"] = self.product_info
-
-        self.reqid += 1
-        self.reqAuthenticate(req, self.reqid)
 
     def login(self) -> None:
         """用户登录"""
