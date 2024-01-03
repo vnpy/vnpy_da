@@ -146,7 +146,7 @@ public:
 
 	string getVersion();
 
-	void createFutureApi(bool recordLog, string logFileName, string logFileDir = "");
+	void createFutureApi(bool recordLog, string logFileName, string logFileDir);
 
 	void init();
 

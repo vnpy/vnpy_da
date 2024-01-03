@@ -132,7 +132,7 @@ public:
 
 	string getVersion();
 
-	void createStockApi(bool recordLog, string logFileName, string logFileDir = "");
+	void createStockApi(bool recordLog, string logFileName, string logFileDir);
 
 	void init();
 

@@ -80,7 +80,7 @@ public:
 
 	int exit();
 
-	void setHeartBeatTimeout(int timeout, bool isStrictCheck = true);
+	void setHeartBeatTimeout(int timeout, bool isStrictCheck);
 
 	void registerNameServer(string address);
 
