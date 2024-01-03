@@ -537,23 +537,23 @@ class DaFutureApi(FutureApi):
 
     def onRspQryTotalPosition(self, data: dict, error: dict, reqid: int, last: bool) -> None:
         """持仓查询回报"""
-        if data["TreatyCode"]:
+        if data["ContractCode"]:
             long_position: PositionData = PositionData(
-                symbol=data["TreatyCode"],
-                exchange=EXCHANGE_DA2VT[data["ExchangeNo"]],
+                symbol=data["ContractCode"],
+                exchange=EXCHANGE_DA2VT[data["ExchangeCode"]],
                 direction=Direction.LONG,
-                volume=data["BuyHoldNumber"],
-                price=data["BuyHoldOpenPrice"],
+                volume=data["LongPositionQty"],
+                price=data["LongPosAveragePrx"],
                 gateway_name=self.gateway_name
             )
             self.gateway.on_position(long_position)
 
             short_position: PositionData = PositionData(
-                symbol=data["TreatyCode"],
-                exchange=EXCHANGE_DA2VT[data["ExchangeNo"]],
+                symbol=data["ContractCode"],
+                exchange=EXCHANGE_DA2VT[data["ExchangeCode"]],
                 direction=Direction.SHORT,
-                volume=data["SaleHoldNumber"],
-                price=data["SaleHoldOpenPrice"],
+                volume=data["ShortPositionQty"],
+                price=data["ShortPosAveragePrx"],
                 gateway_name=self.gateway_name
             )
             self.gateway.on_position(short_position)
@@ -607,21 +607,21 @@ class DaFutureApi(FutureApi):
     def onRtnPosition(self, data: dict, error: dict, reqid: int, last: bool) -> None:
         """持仓更新推送"""
         long_position: PositionData = PositionData(
-            symbol=data["TreatyCode"],
-            exchange=EXCHANGE_DA2VT[data["ExchangeNo"]],
+            symbol=data["ContractCode"],
+            exchange=EXCHANGE_DA2VT[data["ExchangeCode"]],
             direction=Direction.LONG,
-            volume=data["BuyHoldNumber"],
-            price=data["BuyHoldOpenPrice"],
+            volume=data["LongPositionQty"],
+            price=data["LongPosAveragePrx"],
             gateway_name=self.gateway_name
         )
         self.gateway.on_position(long_position)
 
         short_position: PositionData = PositionData(
-            symbol=data["TreatyCode"],
-            exchange=EXCHANGE_DA2VT[data["ExchangeNo"]],
+            symbol=data["ContractCode"],
+            exchange=EXCHANGE_DA2VT[data["ExchangeCode"]],
             direction=Direction.SHORT,
-            volume=data["SaleHoldNumber"],
-            price=data["SaleHoldOpenPrice"],
+            volume=data["ShortPositionQty"],
+            price=data["ShortPosAveragePrx"],
             gateway_name=self.gateway_name
         )
         self.gateway.on_position(short_position)
