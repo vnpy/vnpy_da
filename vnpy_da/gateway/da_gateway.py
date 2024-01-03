@@ -178,7 +178,7 @@ class DaGateway(BaseGateway):
 
     def write_error(self, msg: str, error: dict) -> None:
         """输出错误信息日志"""
-        error_id: str = error["ErrorID"]
+        error_id: int = error["ErrorID"]
         error_msg: str = error["ErrorMsg"]
         msg: str = f"{msg}，代码：{error_id}，信息：{error_msg}"
         self.write_log(msg)
@@ -399,7 +399,7 @@ class DaFutureApi(FutureApi):
         if not data["OrderNo"]:
             return
 
-        errorid: str = error["ErrorID"]
+        errorid: int = error["ErrorID"]
         orderid: str = data["LocalNo"]
         order: OrderData = self.orders[orderid]
 
