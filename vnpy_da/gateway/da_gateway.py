@@ -464,21 +464,21 @@ class DaFutureApi(FutureApi):
 
     def onRspQryOrder(self, data: dict, error: dict, reqid: int, last: bool) -> None:
         """委托查询回报"""
-        if data["TreatyCode"]:
+        if data["ContractCode"]:
             timestamp: str = f"{data['OrderDate']} {data['OrderTime']}"
             dt: datetime = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
             dt: datetime = dt.replace(tzinfo=CHINA_TZ)
 
             order: OrderData = OrderData(
-                symbol=data["TreatyCode"],
+                symbol=data["ContractCode"],
                 exchange=EXCHANGE_DA2VT[data["ExchangeCode"]],
                 orderid=data["LocalNo"],
-                type=ORDERTYPE_DA2VT[data["PriceType"]],
-                direction=DIRECTION_DA2VT[data["BuySale"]],
-                offset=OFFSET_DA2VT[data["AddReduce"]],
+                type=ORDERTYPE_DA2VT[data["OrderType"]],
+                direction=DIRECTION_DA2VT[data["BidAskFlag"]],
+                offset=OFFSET_DA2VT[data["OpenCloseFlag"]],
                 price=float(data["OrderPrice"]),
-                volume=int(data["OrderNumber"]),
-                traded=int(data["FilledNumber"]),
+                volume=int(data["OrderQty"]),
+                traded=int(data["FilledQty"]),
                 status=STATUS_DA2VT[data["OrderState"]],
                 datetime=dt,
                 gateway_name=self.gateway_name
@@ -563,7 +563,7 @@ class DaFutureApi(FutureApi):
 
     def onRtnOrder(self, data: dict, error: dict, reqid: int, last: bool) -> None:
         """委托更新推送"""
-        orderid: str = data["LocalOrderNo"]
+        orderid: str = data["LocalNo"]
         self.local_no: int = max(self.local_no, int(orderid))
 
         order: OrderData = self.orders.get(orderid, None)
@@ -574,7 +574,7 @@ class DaFutureApi(FutureApi):
         if not order.is_active():
             return
 
-        order.traded = data["FilledNumber"]
+        order.traded = data["FilledQty"]
 
         if data["IsCanceled"] == "1":
             order.status = Status.CANCELLED
