@@ -301,7 +301,7 @@ class DaMarketApi(MarketApi):
             "MacAddress": self.mac_address,
             "ComputerName": "Dev Server",
             "SoftwareName": "VeighNa",
-            "SoftwareVersion": "2.0",
+            "SoftwareVersion": "3.0",
         }
 
         self.reqid += 1
@@ -653,7 +653,7 @@ class DaFutureApi(FutureApi):
             "MacAddress": self.mac_address,
             "ComputerName": "Dev Server",
             "SoftwareName": "VeighNa",
-            "SoftwareVersion": "2.0",
+            "SoftwareVersion": "3.0",
         }
 
         self.reqid += 1
