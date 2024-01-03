@@ -12,11 +12,11 @@
 
 ## 说明
 
-基于DAApi的1.12版本封装开发的直达期货交易接口。
+基于DAApi的1.18.2.0版本封装开发的直达期货交易接口。
 
 ## 安装
 
-安装环境推荐基于3.3.0版本以上的【[**VeighNa Studio**](https://www.vnpy.com)】。
+安装环境推荐基于3.9.0版本以上的【[**VeighNa Studio**](https://www.vnpy.com)】。
 
 直接使用pip命令：
 
