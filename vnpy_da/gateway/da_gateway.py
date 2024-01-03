@@ -33,35 +33,50 @@ from ..api import (
     FutureApi,
     DAF_SUB_Append,
     DAF_TYPE_Future,
-    DERIVATIVE_TDY_TIF
+    DERIVATIVE_TDY_TIF,
+    DERIVATIVE_ORDER_STATE1,
+    DERIVATIVE_ORDER_STATE2,
+    DERIVATIVE_ORDER_STATE3,
+    DERIVATIVE_ORDER_STATE4,
+    DERIVATIVE_ORDER_STATE5,
+    DERIVATIVE_ORDER_STATE6,
+    DERIVATIVE_ORDER_STATE7,
+    DERIVATIVE_ORDER_STATE8,
+    DERIVATIVE_ORDER_STATE9,
+    DERIVATIVE_ORDER_STATEA,
+    DERIVATIVE_ORDER_IS_CANCELLED,
+    STOCK_BID,
+    STOCK_ASK,
+    STOCK_LIMIT_ORDER,
+    STOCK_MARKET_ORDER
 )
 
 
 # 委托状态映射
 STATUS_DA2VT: Dict[str, Status] = {
-    "1": Status.SUBMITTING,
-    "2": Status.NOTTRADED,
-    "3": Status.PARTTRADED,
-    "4": Status.ALLTRADED,
-    "5": Status.CANCELLED,
-    "6": Status.CANCELLED,
-    "7": Status.REJECTED,
-    "8": Status.SUBMITTING,
-    "9": Status.SUBMITTING,
-    "A": Status.SUBMITTING,
+    DERIVATIVE_ORDER_STATE1: Status.SUBMITTING,
+    DERIVATIVE_ORDER_STATE2: Status.NOTTRADED,
+    DERIVATIVE_ORDER_STATE3: Status.PARTTRADED,
+    DERIVATIVE_ORDER_STATE4: Status.ALLTRADED,
+    DERIVATIVE_ORDER_STATE5: Status.CANCELLED,
+    DERIVATIVE_ORDER_STATE6: Status.CANCELLED,
+    DERIVATIVE_ORDER_STATE7: Status.REJECTED,
+    DERIVATIVE_ORDER_STATE8: Status.SUBMITTING,
+    DERIVATIVE_ORDER_STATE9: Status.SUBMITTING,
+    DERIVATIVE_ORDER_STATEA: Status.SUBMITTING,
 }
 
 # 多空方向映射
 DIRECTION_VT2DA: Dict[Direction, str] = {
-    Direction.LONG: "1",
-    Direction.SHORT: "2"
+    Direction.LONG: STOCK_BID,
+    Direction.SHORT: STOCK_ASK
 }
 DIRECTION_DA2VT: Dict[str, Direction] = {v: k for k, v in DIRECTION_VT2DA.items()}
 
 # 委托类型映射
 ORDERTYPE_VT2DA: Dict[OrderType, str] = {
-    OrderType.LIMIT: "1",
-    OrderType.MARKET: "2"
+    OrderType.LIMIT: STOCK_LIMIT_ORDER,
+    OrderType.MARKET: STOCK_MARKET_ORDER
 }
 ORDERTYPE_DA2VT: Dict[str, OrderType] = {v: k for k, v in ORDERTYPE_VT2DA.items()}
 
@@ -397,7 +412,6 @@ class DaFutureApi(FutureApi):
 
     def onRspAccount(self, data: dict, error: dict, reqid: int, last: bool) -> None:
         """用户登录回报"""
-        print("onRspAccount", data)
         currency_account_map[data["CurrencyNo"]] = data["AccountNo"]
         account_currency_map[data["AccountNo"]] = data["CurrencyNo"]
 
@@ -582,7 +596,7 @@ class DaFutureApi(FutureApi):
 
         order.traded = data["FilledQty"]
 
-        if data["IsCanceled"] == "1":
+        if data["IsCanceled"] == DERIVATIVE_ORDER_IS_CANCELLED:
             order.status = Status.CANCELLED
         elif order.traded == order.volume:
             order.status = Status.ALLTRADED
