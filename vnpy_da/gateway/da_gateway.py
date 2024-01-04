@@ -135,7 +135,7 @@ class DaGateway(BaseGateway):
         "交易服务器": "",
         "行情服务器": "",
         "授权码": "",
-        "行情经纪商识别号": ""
+        "行情源识别号": ""
     }
 
     exchanges: List[str] = list(EXCHANGE_DA2VT.values())
@@ -154,7 +154,7 @@ class DaGateway(BaseGateway):
         future_address: str = setting["交易服务器"]
         market_address: str = setting["行情服务器"]
         auth_code: str = setting["授权码"]
-        brokerid: str = setting["行情经纪商识别号"]
+        brokerid: str = setting["行情源识别号"]
 
         if not future_address.startswith("tcp://"):
             future_address: str = "tcp://" + future_address
