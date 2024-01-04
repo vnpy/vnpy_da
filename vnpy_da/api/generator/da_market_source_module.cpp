@@ -10,4 +10,5 @@
 .def("onRspTradeDate", &MarketApi::onRspTradeDate)
 .def("onRspBrokerData", &MarketApi::onRspBrokerData)
 .def("onRspMarketData", &MarketApi::onRspMarketData)
+.def("onRspUserLogout", &MarketApi::onRspUserLogout)
 ;

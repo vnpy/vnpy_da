@@ -151,3 +151,15 @@ void MarketApi::OnRspMarketData(CMarketRspMarketDataField *pRspMarketData, CMark
 	this->onRspMarketData(data, error, iRequestID, bIsLast);
 };
 
+void MarketApi::OnRspUserLogout(CMarketRspInfoField *pRspInfo, int iRequestID, bool bIsLast) //update 2020.04.28 ywh 
+{
+	gil_scoped_acquire acquire;
+	dict error;
+	if (pRspInfo)
+	{
+		error["ErrorID"] = pRspInfo->ErrorID;
+		error["ErrorMsg"] = toUtf(pRspInfo->ErrorMsg);
+	}
+	this->onRspUserLogout(error, iRequestID, bIsLast);
+};
+

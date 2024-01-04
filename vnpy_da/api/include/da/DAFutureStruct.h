@@ -10,6 +10,9 @@
 
 #include "DADataType.h"
 
+namespace Directaccess {
+
+
 // 错误描述
 struct CFutureRspInfoField 
 {
@@ -87,92 +90,240 @@ struct CFutureReqUserLogoutField
 	TDAStringType		ErrorDescription;					// 错误信息
 };
 // 新增订单请求
+// new order request struct
 struct CFutureReqOrderInsertField
 {
 	TDAStringType		UserId;								// 用户标识
-	TDAStringType		UserType;							// 用户类型：1：一般用户；2：机构通用户；
+															// User id
+
 	TDAStringType		AccountNo;							// 资金账号
-	TDAStringType		LocalNo;							// 本地编号
-	TDAStringType		TradePwd;							// 交易密码
-	TDAStringType		IsRiskOrder;						// 用户下单类型：C或是空客户下单；D：是del下单 R：强平下单（风控）；Y：盈损单；T：条件单
+															// Account No
+
+	TDAStringType		LocalNo;							// API用户的程序指定的本地订单编号	
+															// Order ID assigned by API user program
+
 	TDAStringType		ExchangeCode;						// 交易所代码
-	TDAStringType		TreatyCode;							// 合约代码
-	TDAStringType		BuySale;							// 买还是卖：1=buy 2=sell
-	TDAStringType		AddReduce;							// 开仓还是平仓：1=开仓 2=平仓，3=平今
-	TDAStringType		OrderNumber;						// 下单数
-	TDAStringType		OrderPrice;							// 下单价格
-	TDAStringType		TradeType;							// 交易方式：1=regular 2=FOK 3=IOC
-	TDAStringType		PriceType;							// 定单类型：1=限价单, 2=市价单，3=限价止损（stop to limit），4=止损（stop to market）
-	TDAStringType		HtsType;							// 跨期合约下单： "STARTEGY";自定义策略下单："SELFDEFINE"
-	TDAStringType		ForceID;							// 强平编号
+															// Exchange code
+
+	TDAStringType		ContractCode;						// 合约代码
+															// Contract code 
+
+	TDAStringType		BidAskFlag;							// 买还是卖: DERIVATIVE_BID=买,DERIVATIVE_ASK=卖	
+															// Bid or ask: DERIVATIVE_BID=bid,DERIVATIVE_ASK=ask
+
+	TDAStringType		OpenCloseFlag;						// 开仓还是平仓: DERIVATIVE_OPEN_POS_FLAG=开仓,DERIVATIVE_CLOSE_POS_FLAG=平仓
+															// Open/close position flag: DERIVATIVE_OPEN_POS_FLAG=open position	,DERIVATIVE_CLOSE_POS_FLAG=close position
+
+	TDAStringType		OrderQty;							// 订单数量
+															// Order quantity
+
+	TDAStringType		OrderPrice;							// 下单价格	
+															// Order price
+
+	// 定单类型：
+	//		DERIVATIVE_LIMIT_ORDER=限价单, DERIVATIVE_MARKET_ORDER=市价单
+	//		DERIVATIVE_LIMIT_STOP_ORDER=限价止损，DERIVATIVE_STOP_LOSS_ORDER=止损	
+	// order type:
+	//		DERIVATIVE_LIMIT_ORDER=limit order, DERIVATIVE_MARKET_ORDER=market order 
+	//		DERIVATIVE_LIMIT_STOP_ORDER=limit stop order ,DERIVATIVE_STOP_LOSS_ORDER=stop loss order
+	TDAStringType		OrderType;
+
 	TDAStringType		TriggerPrice;						// 触发价格
-	TDAStringType		ValidDate;							// 有效日期（1=当日有效, 2=永久有效（GTC），3=OPG，4=IOC，5=FOK，6=GTD，7=ATC，8=FAK）
+															// Trigger price
+	// 有效日期:
+	//		DERIVATIVE_TDY_TIF=当日有效, DERIVATIVE_GTC_TIF=永久有效（GTC），DERIVATIVE_OPG_TIF=OPG,DERIVATIVE_IOC_TIF4=IOC
+	//		DERIVATIVE_FOK_TIF=FOK，DERIVATIVE_GTD_TIF=GTD，DERIVATIVE_ATC_TIF=ATC，DERIVATIVE_FAK_TIF=FAK
+	// order time in force:
+	//		DERIVATIVE_TDY_TIF=the day only,DERIVATIVE_GTC_TIF=GTC,DERIVATIVE_OPG_TIF=OPG,DERIVATIVE_IOC_TIF=IOC
+	//		DERIVATIVE_FOK_TIF=FOK,DERIVATIVE_GTD_TIF=GTD,DERIVATIVE_ATC_TIF=ATC,DERIVATIVE_FAK_TIF=FAK	
+	TDAStringType		TIF;							
+	
 	TDAStringType		StrategyId;							// 策略ID 20130726 add
-	TDAStringType		MaxShow;							// 显示委托量 20150803 add 必须小于委托量
-	TDAStringType		MinQty;								// 最小成交量 20150901 add 必须小于等于委托量 有效日期=4IOC时 MaxShow>=1小于委托量时是FOK，等于委托量时是FAK
+															// Strategy id
+
+	TDAStringType		MaxShow;							// 冰山单显示的最大数量
+															// Max show quantity for ICE order													
+
+	TDAStringType		MinQty;								// FAK/FOK订单的最小成交量
+															// Min filled quantity expected by FAK/FOK order
+
+	TDAStringType		Tag50;								// 下单人ID(CME交易所特定)
+															//  Order placer's id (CME exchange specific)
+
 	TDAStringType		ErrorDescription;					// 错误信息
+															// Error message description
+	TDAIntType		    IsProgram;							// 程序化单(0)或人工单(1)	
+
+	TDAStringType	    OrgOrderLocationID;					// ISO(3166-1)标准中定义的国家代码
+															// ISO(3166-1)identifier of the physical location
+
 };
 // 新增订单返回
 struct CFutureRspOrderInsertField
 {
 	TDAStringType		UserId;								// 用户标识
+															// User id
+		
 	TDAStringType		AccountNo;							// 资金账号
+															// Account No														
+
 	TDAStringType		SystemNo;							// 系统编号
-	TDAStringType		LocalNo;							// 本地编号
-	TDAStringType		OrderNo;							// 定单号
-	TDAStringType		OrigOrderNo;						// 原定单号
-	TDAStringType		OrderMethod;						// 下单方式：1：定单；2：改单；3：撤单
-	TDAStringType		AcceptType;							// （废弃）
+															// System no	
+		
+	TDAStringType		LocalNo;							// 本地编号 API用户的程序指定的本地订单编号
+															// Order ID assigned by API user program
+
+	TDAStringType		OrderNo;							// 定单号 交易所系统给定的订单号，LocalNo:SystemNo:OrderNo是一对一对一的关系
+															// The order number given by the exchange system ,LocalNo:SystemNo:OrderNo,these three are one-to-one relationships
+																	
 	TDAStringType		ExchangeCode;						// 交易所代码
-	TDAStringType		TreatyCode;							// 合约代码
-	TDAStringType		BuySale;							// 买还是卖：1=buy 2=sell
-	TDAStringType		OrderNumber;						// 下单数
+															// Exchange code														
+
+	TDAStringType		ContractCode;						// 合约代码
+															// Contract code
+
+	TDAStringType		BidAskFlag;							// 买还是卖: DERIVATIVE_BID=买,DERIVATIVE_ASK=卖
+															// Bid or ask: DERIVATIVE_BID=bid,DERIVATIVE_ASK=ask
+
+	TDAStringType		OrderQty;							// 订单数量
+															// Order quantity
+
 	TDAStringType		OrderPrice;							// 下单价格
-	TDAStringType		FilledNumber;						// 已成交数
-	TDAStringType		FilledPrice;						// 成交均价
-	TDAStringType		TradeType;							// 交易方式：1=regular 2=FOK 3=IOC
-	TDAStringType		PriceType;							// 定单类型：1=限价单, 2=市价单，3=限价止损（stop to limit），4=止损（stop to market）
-	TDAStringType		HtsType;							// 0=regular 1=HTS
+															// Order price
+		
+	// 定单类型：
+	//		DERIVATIVE_LIMIT_ORDER=限价单, DERIVATIVE_MARKET_ORDER=市价单
+	//		DERIVATIVE_LIMIT_STOP_ORDER=限价止损，DERIVATIVE_STOP_LOSS_ORDER=止损	
+	// Order type:
+	//		DERIVATIVE_LIMIT_ORDER=limit order, DERIVATIVE_MARKET_ORDER=market order 
+	//		DERIVATIVE_LIMIT_STOP_ORDER=limit stop order ,DERIVATIVE_STOP_LOSS_ORDER=stop loss order
+	TDAStringType		OrderType;							
+	
 	TDAStringType		OrderDate;							// 下单日期
+															// Order date
+
 	TDAStringType		OrderTime;							// 下单时间
+															// Order time
+
 	TDAStringType		ErrorCode;							// 错误代码
-	TDAStringType		OrderState;							// 订单状态（1：已请求；2：已排队；3：部分成交；4：完全成交；5：已撤余单；6：已撤单；7：指令失败；8：待送出；9：待更改；A：待撤单）
-	TDAStringType		IsRiskOrder;						// 用户下单类型：C或是空客户下单；D：是del下单 R：强平下单（风控）；Y：盈损单；T：条件单
-	TDAStringType		CancelUserId;						// 撤单的用户标识
+															// Error code
+
+	// 订单状态:
+	//		DERIVATIVE_ORDER_STATE1=已请求；  DERIVATIVE_ORDER_STATE2=已排队；  DERIVATIVE_ORDER_STATE3=部分成交
+	//		DERIVATIVE_ORDER_STATE4=完全成交；DERIVATIVE_ORDER_STATE5=已撤余单；DERIVATIVE_ORDER_STATE6=已撤单
+	//		DERIVATIVE_ORDER_STATE7=指令失败；DERIVATIVE_ORDER_STATE8=待送出；  DERIVATIVE_ORDER_STATE9=待更改；
+	//		DERIVATIVE_ORDER_STATEA=待撤单
+	// Order state:
+	//		DERIVATIVE_ORDER_STATE1=requested 
+	//		DERIVATIVE_ORDER_STATE2=be queuing  
+	//		DERIVATIVE_ORDER_STATE3=some orders were closed  
+	//		DERIVATIVE_ORDER_STATE4=full order  
+	//		DERIVATIVE_ORDER_STATE5=the remaining order has been cancelled
+	//		DERIVATIVE_ORDER_STATE6=order has been cancelled  
+	//		DERIVATIVE_ORDER_STATE7=command failure 
+	//		DERIVATIVE_ORDER_STATE8=the command is waiting to be sent 
+	//		DERIVATIVE_ORDER_STATE9=the command is waiting to be changed 
+	//		DERIVATIVE_ORDER_STATEA=the command is waiting to be cancelled
+	TDAStringType		OrderState;							
+															
+	
 	TDAStringType		TriggerPrice;						// 触发价格
-	TDAStringType		ValidDate;							// 有效日期（1=当日有效, 2=永久有效（GTC），3=OPG，4=IOC，5=FOK，6=GTD，7=ATC，8=FAK）
-	TDAStringType		AddReduce;							// 开仓还是平仓：1=开仓 2=平仓，3=平今，4=平昨
-	TDAStringType		StrategyId;							// 策略ID 20130726 add
-	TDAStringType		MaxShow;							// 显示委托量 20150803 add 必须小于委托量
-	TDAStringType		MinQty;								// 最小成交量 
+															// Trigger price
+	// 有效日期:
+	//		DERIVATIVE_TDY_TIF=当日有效, DERIVATIVE_GTC_TIF=永久有效（GTC），DERIVATIVE_OPG_TIF=OPG,DERIVATIVE_IOC_TIF4=IOC
+	//		DERIVATIVE_FOK_TIF=FOK，DERIVATIVE_GTD_TIF=GTD，DERIVATIVE_ATC_TIF=ATC，DERIVATIVE_FAK_TIF=FAK
+	// Order time in force:
+	//		DERIVATIVE_TDY_TIF=the day only,DERIVATIVE_GTC_TIF=GTC,DERIVATIVE_OPG_TIF=OPG,DERIVATIVE_IOC_TIF=IOC
+	//		DERIVATIVE_FOK_TIF=FOK,DERIVATIVE_GTD_TIF=GTD,DERIVATIVE_ATC_TIF=ATC,DERIVATIVE_FAK_TIF=FAK
+	TDAStringType		TIF;
+
+	TDAStringType		OpenCloseFlag;						// 开仓还是平仓: DERIVATIVE_OPEN_POS_FLAG=开仓,DERIVATIVE_CLOSE_POS_FLAG=平仓
+															// Open/close position flag: DERIVATIVE_OPEN_POS_FLAG=open position	,DERIVATIVE_CLOSE_POS_FLAG=close position
+
+	TDAStringType		StrategyId;							// 策略ID		
+															// Strategy id													
+		
+	TDAStringType		MaxShow;							// 冰山单显示的最大数量
+															// Max show quantity for ICE order
+
+	TDAStringType		MinQty;								// FAK/FOK订单的最小成交量 
+															// Min filled quantity expected by FAK/FOK order
+
 	TDAStringType		ExchangeTime;						// 交易所返回时间
-	TDAStringType		CancelTime;							// 撤单时间
+															// Exchange time
+	
+	TDAStringType		OrdSourceType;						// 终端类型(CME交易所特定)
+															// Identify the type of terminal(CME exchange specific)
+
+	TDAStringType		Tag50;								// 下单人ID(CME交易所特定)
+															// Order placer's id (CME exchange specific)
 };
 // 修改订单请求
 struct CFutureReqOrderModifyField
 {
 	TDAStringType		SystemNo;							// 系统编号
+															// System No
+
 	TDAStringType		UserId;								// 用户标识
-	TDAStringType		UserType;							// 用户类型：1：一般用户；2：机构通用户；
-	TDAStringType		LocalNo;							// 本地编号
+															// User id
+	
+	TDAStringType		LocalNo;							// API用户的程序指定的本地订单编号
+															// Order ID assigned by API user program
+
 	TDAStringType		AccountNo;							// 资金账号
-	TDAStringType		TradePwd;							// 交易密码
+															// Account No
+	
 	TDAStringType		OrderNo;							// 定单号
+															// The order number given by the exchange system ,LocalNo:SystemNo:OrderNo,these three are one-to-one relationships
+
 	TDAStringType		ExchangeCode;						// 交易所代码
-	TDAStringType		TreatyCode;							// 合约代码
-	TDAStringType		BuySale;							// 买还是卖：1=buy 2=sell
-	TDAStringType		OrderNumber;						// 下单数
+															// Exchange code
+															
+	TDAStringType		ContractCode;						// 合约代码
+															// Contract code
+
+	TDAStringType		BidAskFlag;							// 买还是卖: DERIVATIVE_BID=买,DERIVATIVE_ASK=卖
+															// Bid or ask: DERIVATIVE_BID=bid,DERIVATIVE_ASK=ask
+
+	TDAStringType		OrderQty;							// 订单数量
+															// Order quantity
+
 	TDAStringType		OrderPrice;							// 下单价格
-	TDAStringType		FilledNumber;						// 已成交数 
-	TDAStringType		ModifyNumber;						// 改单数 
+															// Order price
+	
+	TDAStringType		ModifyQty;							// 改单数 
+															// Modify quantity
+
 	TDAStringType		ModifyPrice;						// 改单价格
-	TDAStringType		TradeType;							// 交易方式：1=regular 2=FOK 3=IOC
-	TDAStringType		PriceType;							// 价格类型：1=限价单, 2=市价单，3=限价止损（stop to limit），4=止损（stop to market）
-	TDAStringType		IsRiskOrder;						// 用户下单类型：C或是空客户下单；D：是del下单 R：强平下单（风控）
+															// Modify price
+	
+	// 定单类型：
+	//		DERIVATIVE_LIMIT_ORDER=限价单, DERIVATIVE_MARKET_ORDER=市价单
+	//		DERIVATIVE_LIMIT_STOP_ORDER=限价止损，DERIVATIVE_STOP_LOSS_ORDER=止损	
+	// order type:
+	//		DERIVATIVE_LIMIT_ORDER=limit order, DERIVATIVE_MARKET_ORDER=market order 
+	//		DERIVATIVE_LIMIT_STOP_ORDER=limit stop order ,DERIVATIVE_STOP_LOSS_ORDER=stop loss order
+	TDAStringType		OrderType;							
+	
 	TDAStringType		TriggerPrice;						// 触发价格
+															// Trigger price
+
 	TDAStringType		ModifyTriggerPrice;					// 改单触发价格
-	TDAStringType		ValidDate;							// 有效日期（1：当日有效；2：永久有效）
+															// Modify trigger price
+	// 有效日期:
+	//		DERIVATIVE_TDY_TIF=当日有效, DERIVATIVE_GTC_TIF=永久有效（GTC）	
+	// order time in force:
+	//		DERIVATIVE_TDY_TIF=the day only,DERIVATIVE_GTC_TIF=GTC
+	TDAStringType		TIF;
+
+	TDAStringType		Tag50;								// 下单人ID(CME交易所特定)
+															// Order placer's id (CME exchange specific)
+
 	TDAStringType		ErrorDescription;					// 错误信息
+															// Error description
+	TDAStringType	    OrgOrderLocationID;					// ISO(3166-1)标准中定义的国家代码
+															// ISO(3166-1)identifier of the physical location
+
 };
 // 修改订单返回
 typedef CFutureRspOrderInsertField CFutureRspOrderModifyField;
@@ -180,48 +331,111 @@ typedef CFutureRspOrderInsertField CFutureRspOrderModifyField;
 struct CFutureReqOrderCancelField
 {
 	TDAStringType		UserId;								// 用户标识
-	TDAStringType		UserType;							// 用户类型：1：一般用户；2：机构通用户；
-	TDAStringType		LocalNo;							// 本地编号
+															// User id
+	
+	TDAStringType		LocalNo;							// API用户的程序指定的本地订单编号
+															// Order ID assigned by API user program
+
 	TDAStringType		AccountNo;							// 资金账号
-	TDAStringType		TradePwd;							// 交易密码
-	TDAStringType		IsSimulation;						// 是否模拟用户：1：是；0 or other：不是
+															// Account No
+		
 	TDAStringType		SystemNo;							// 系统编号
+															// System No
+
 	TDAStringType		OrderNo;							// 定单号
+															// The order number given by the exchange system ,LocalNo:SystemNo:OrderNo,these three are one-to-one relationships
 	TDAStringType		ExchangeCode;						// 交易所代码
-	TDAStringType		TreatyCode;							// 合约代码
-	TDAStringType		BuySale;							// 买还是卖：1=buy 2=sell
-	TDAStringType		OrderNumber;						// 下单数
+															// Exchange code
+
+	TDAStringType		ContractCode;						// 合约代码
+															// Contract code
+
+	TDAStringType		BidAskFlag;							// 买还是卖: DERIVATIVE_BID=买,DERIVATIVE_ASK=卖
+															// Bid or ask: DERIVATIVE_BID=bid,DERIVATIVE_ASK=ask
+
+	TDAStringType		OrderQty;							// 下单数
+															// Order quantity
+
 	TDAStringType		OrderPrice;							// 下单价格
-	TDAStringType		FilledNumber;						// 已成交数 
-	TDAStringType		TradeType;							// 交易方式：1=regular 2=FOK 3=IOC
-	TDAStringType		PriceType;							// 价格类型：1=limit order, 2=market order
-	TDAStringType		HtsType;							// 0=regular 1=HTS
-	TDAStringType		IsRiskOrder;						// 用户下单类型：C或是空客户下单；D：是del下单 R：强平下单（风控）
+															// Order price
+	
+		// 定单类型：
+	//		DERIVATIVE_LIMIT_ORDER=限价单, DERIVATIVE_MARKET_ORDER=市价单
+	// Order type:
+	//		DERIVATIVE_LIMIT_ORDER=limit order, DERIVATIVE_MARKET_ORDER=market order 
+	TDAStringType		OrderType;							
+		
+	TDAStringType		Tag50;								// 下单人ID(CME交易所特定)
+															//  Order placer's id (CME exchange specific)
+
 	TDAStringType		ErrorDescription;					// 错误信息
+															// Error message description
+
+	TDAStringType	    OrgOrderLocationID;					// ISO(3166-1)标准中定义的国家代码
+															// ISO(3166-1)identifier of the physical location
+
 };
 // 撤单返回
 struct CFutureRspOrderCancelField
 {
 	TDAStringType		UserId;								// 用户标识
+															// User id
+
 	TDAStringType		AccountNo;							// 资金账号
+															// Account No
+
 	TDAStringType		SystemNo;							// 系统编号
-	TDAStringType		LocalNo;							// 本地号
-	TDAStringType		OrderNo;							// 定单号
+															// System No
+
+	TDAStringType		LocalNo;							// 本地编号 API用户的程序指定的本地订单编号
+															// Order ID assigned by API user program
+
+	TDAStringType		OrderNo;							// 定单号 交易所系统给定的订单号，LocalNo:SystemNo:OrderNo是一对一对一的关系
+															// The order number given by the exchange system ,LocalNo:SystemNo:OrderNo,these three are one-to-one relationships
+
 	TDAStringType		CancelNo;							// 撤单号
+															// Cancel order No
+
 	TDAStringType		ExchangeCode;						// 交易所代码
-	TDAStringType		TreatyCode;							// 合约代码
-	TDAStringType		BuySale;							// 买还是卖：1=buy 2=sell
-	TDAStringType		OrderNumber;						// 下单数
+															// Exchange code
+
+	TDAStringType		ContractCode;						// 合约代码
+															// Contract code
+
+	TDAStringType		BidAskFlag;							// 买还是卖: DERIVATIVE_BID=买,DERIVATIVE_ASK=卖
+															// Bid or ask: DERIVATIVE_BID=bid,DERIVATIVE_ASK=ask
+
+	TDAStringType		OrderQty;							// 下单数
+															// Order quantity
+
 	TDAStringType		OrderPrice;							// 下单价格
-	TDAStringType		FilledNumber;						// 已成交数
-	TDAStringType		CancelNumber;						// 已撤单数
-	TDAStringType		TradeType;							// 交易方式：1=regular 2=FOK 3=IOC
-	TDAStringType		PriceType;							// 价格类型：1=limit order, 2=market order
-	TDAStringType		HtsType;							// 0=regular 1=HTS
-	TDAStringType		CancelDate;							// 撤单日期
-	TDAStringType		CancelTime;							// 撤单时间
+															// Order price
+
+	TDAStringType		FilledQty;							// 已成交数
+															// Filled quantity (The number of orders has been completed)
+
+	TDAStringType		CancelledQty;						// 已撤单数
+															// Cancelled quantity
+	// 定单类型：
+	//		DERIVATIVE_LIMIT_ORDER=限价单, DERIVATIVE_MARKET_ORDER=市价单
+	// Order type:
+	//		DERIVATIVE_LIMIT_ORDER=limit order, DERIVATIVE_MARKET_ORDER=market order 
+	TDAStringType		OrderType;							
+	
+	TDAStringType		CancelledDate;						// 撤单日期
+															// Cancelled date
+
+	TDAStringType		CancelledTime;						// 撤单时间
+															// Cancelled time
+
 	TDAStringType		ErrorCode;							// 错误代码
-	TDAStringType		IsRiskOrder;						// 用户下单类型：C或是空客户下单；D：是del下单 R：强平下单（风控）
+															// Error code
+	
+	TDAStringType		OrdSourceType;						// 终端类型(CME交易所特定)
+															// Identify the type of terminal(CME exchange specific)
+															
+	TDAStringType		Tag50;								// 下单人ID(CME交易所特定)
+															// Order placer's id (CME exchange specific)
 };
 // 修改密码请求
 struct CFutureReqPasswordUpdateField
@@ -242,55 +456,139 @@ struct CFutureRspPasswordUpdateField
 struct CFutureQryOrderField
 {
 	TDAStringType		UserId;								// 用户标识
-	TDAStringType		UserType;							// 用户类型：1：一般用户；2：机构通用户；
+															// User id
+
 	TDAStringType		AccountNo;							// 资金账号
-	TDAStringType		TradePwd;							// 交易密码
-	TDAStringType		IsSimulation;						// 是否模拟用户：1：是；0 or other：不是
+															// Account No
+// 是否模拟用户：DERIVATIVE_IS_SIMULATED_USER=是；DERIVATIVE_IS_NOT_SIMULATED_USER or other：不是
+// Is it a simulated user:
+// DERIVATIVE_IS_SIMULATED_USER=is a simulated user
+// DERIVATIVE_IS_NOT_SIMULATED_USER or other = is not a simulated user
+	TDAStringType		IsSimulation;						
+															
 	TDAStringType		OrderNo;							// 取得指定订单号以后的定单
+															// Obtain a subsequent order with the specified order number
+
 	TDAStringType		OrderDateTime;						// 取得指定订单时间以后的定单（格式：yyyy-MM-dd hh:mm:ss）
+															// Obtain orders after the specified order time（format：yyyy-MM-dd hh:mm:ss）
+
 	TDAStringType		ErrorDescription;					// 错误信息
+															// Error description
 };
 // 查询订单返回
 struct CFutureRspOrderField
 {
 	TDAStringType		UserId;								// 用户标识
+															// User id
+
 	TDAStringType		AccountNo;							// 资金账号
+															// Account No
+
 	TDAStringType		SystemNo;							// 系统编号
-	TDAStringType		LocalNo;							// 本地编号
-	TDAStringType		OrderNo;							// 定单号
-	TDAStringType		OrigOrderNo;						// 原定单号
-	TDAStringType		OrderMethod;						// 下单方式：1：定单；2：改单；3：撤单
-	TDAStringType		AcceptType;							// （废弃）
+															// System No
+
+	TDAStringType		LocalNo;							// API用户的程序指定的本地订单编号
+															// Order ID assigned by API user program
+
+	TDAStringType		OrderNo;							// 定单号 交易所系统给定的订单号，LocalNo:SystemNo:OrderNo是一对一对一的关系
+															// The order number given by the exchange system ,LocalNo:SystemNo:OrderNo,these three are one-to-one relationships
+		
 	TDAStringType		ExchangeCode;						// 交易所代码
-	TDAStringType		TreatyCode;							// 合约代码
-	TDAStringType		BuySale;							// 买还是卖：1=buy 2=sell
-	TDAStringType		OrderNumber;						// 下单数
+															// Exchange code
+
+	TDAStringType		ContractCode;						// 合约代码
+															// Contract code
+
+	TDAStringType		BidAskFlag;							// 买还是卖: DERIVATIVE_BID=买,DERIVATIVE_ASK=卖
+															// Bid or ask: DERIVATIVE_BID=bid,DERIVATIVE_ASK=ask
+
+	TDAStringType		OrderQty;							// 订单数量
+															// Order quantity
+
 	TDAStringType		OrderPrice;							// 下单价格
-	TDAStringType		FilledNumber;						// 已成交数
+															// Order price
+
+	TDAStringType		FilledQty;							// 已成交数
+															// Filled quantity (The number of orders has been completed)
+
 	TDAStringType		FilledPrice;						// 成交均价
-	TDAStringType		TradeType;							// 交易方式：1=regular 2=FOK 3=IOC
-	TDAStringType		PriceType;							// 定单类型：1=限价单, 2=市价单，3=限价止损（stop to limit），4=止损（stop to market）
-	TDAStringType		HtsType;							// 0=regular 1=HTS
+															// Filled price(Average transaction price)
+
+	// 定单类型：
+	//		DERIVATIVE_LIMIT_ORDER=限价单, DERIVATIVE_MARKET_ORDER=市价单
+	//		DERIVATIVE_LIMIT_STOP_ORDER=限价止损，DERIVATIVE_STOP_LOSS_ORDER=止损	
+	// Order type:
+	//		DERIVATIVE_LIMIT_ORDER=limit order, DERIVATIVE_MARKET_ORDER=market order 
+	//		DERIVATIVE_LIMIT_STOP_ORDER=limit stop order ,DERIVATIVE_STOP_LOSS_ORDER=stop loss order
+	TDAStringType		OrderType;							
+	
 	TDAStringType		OrderDate;							// 下单日期
+															// Order date
+
 	TDAStringType		OrderTime;							// 下单时间
+															// Order time
+
 	TDAStringType		ErrorCode;							// 错误代码
-	TDAStringType		OrderState;							// 订单状态（1：已请求；2：已排队；3：部分成交；4：完全成交；5：已撤余单；6：已撤单；7：指令失败；8：待送出；9：待更改；A：待撤单）
-	TDAStringType		IsRiskOrder;						// 用户下单类型：C或是空客户下单；D：是del下单 R：强平下单（风控）；Y：盈损单；T：条件单
+															// Error code
+
+	// 订单状态:
+	//		DERIVATIVE_ORDER_STATE1=已请求；  DERIVATIVE_ORDER_STATE2=已排队；  DERIVATIVE_ORDER_STATE3=部分成交
+	//		DERIVATIVE_ORDER_STATE4=完全成交；DERIVATIVE_ORDER_STATE5=已撤余单；DERIVATIVE_ORDER_STATE6=已撤单
+	//		DERIVATIVE_ORDER_STATE7=指令失败；DERIVATIVE_ORDER_STATE8=待送出；  DERIVATIVE_ORDER_STATE9=待更改；
+	//		DERIVATIVE_ORDER_STATEA=待撤单
+	// Order state:
+	//		DERIVATIVE_ORDER_STATE1=requested 
+	//		DERIVATIVE_ORDER_STATE2=be queuing  
+	//		DERIVATIVE_ORDER_STATE3=some orders were closed  
+	//		DERIVATIVE_ORDER_STATE4=full order  
+	//		DERIVATIVE_ORDER_STATE5=the remaining order has been cancelled
+	//		DERIVATIVE_ORDER_STATE6=order has been cancelled  
+	//		DERIVATIVE_ORDER_STATE7=command failure 
+	//		DERIVATIVE_ORDER_STATE8=the command is waiting to be sent 
+	//		DERIVATIVE_ORDER_STATE9=the command is waiting to be changed 
+	//		DERIVATIVE_ORDER_STATEA=the command is waiting to be cancelled
+	TDAStringType		OrderState;							
+	
 	TDAStringType		CancelUserId;						// 撤单的用户标识
+															// User id of cancel order
+
 	TDAStringType		TriggerPrice;						// 触发价格
-	TDAStringType		ValidDate;							// 有效日期（1=当日有效, 2=永久有效（GTC），3=OPG，4=IOC，5=FOK，6=GTD，7=ATC，8=FAK）
-	TDAStringType		AddReduce;							// 开仓还是平仓：1=开仓 2=平仓，3=平今，4=平昨
+															// Trigger price
+
+	// 有效日期:
+	//		DERIVATIVE_TDY_TIF=当日有效, DERIVATIVE_GTC_TIF=永久有效（GTC），DERIVATIVE_OPG_TIF=OPG,DERIVATIVE_IOC_TIF4=IOC
+	//		DERIVATIVE_FOK_TIF=FOK，DERIVATIVE_GTD_TIF=GTD，DERIVATIVE_ATC_TIF=ATC，DERIVATIVE_FAK_TIF=FAK
+	// order time in force:
+	//		DERIVATIVE_TDY_TIF=the day only,DERIVATIVE_GTC_TIF=GTC,DERIVATIVE_OPG_TIF=OPG,DERIVATIVE_IOC_TIF=IOC
+	//		DERIVATIVE_FOK_TIF=FOK,DERIVATIVE_GTD_TIF=GTD,DERIVATIVE_ATC_TIF=ATC,DERIVATIVE_FAK_TIF=FAK
+	TDAStringType		TIF;								
+
+	TDAStringType		OpenCloseFlag;						// 开仓还是平仓: DERIVATIVE_OPEN_POS_FLAG=开仓,DERIVATIVE_CLOSE_POS_FLAG=平仓
+															// Open/close position flag: DERIVATIVE_OPEN_POS_FLAG=open position	,DERIVATIVE_CLOSE_POS_FLAG=close position
+
 	TDAStringType		StrategyId;							// 策略ID 20130726 add
-	TDAStringType		MaxShow;							// 显示委托量 20150803 add 必须小于委托量
-	TDAStringType		MinQty;								// 最小成交量 
+															// Strategy id
+
+	TDAStringType		MaxShow;							// 冰山单显示的最大数量
+															// Max show quantity for ICE order
+
+	TDAStringType		MinQty;								// FAK/FOK订单的最小成交量
+															// Min filled quantity expected by FAK/FOK order
+
 	TDAStringType		ExchangeTime;						// 交易所返回时间
+															// Exchange time
+
 	TDAStringType		CancelTime;							// 撤单时间
+															// Cancel time
 };
 // 查询成交请求
 struct CFutureQryTradeField
 {
+
 	TDAStringType		UserId;								// 用户		
 	TDAStringType		ErrorDescription;					// 错误信息
+	TDAStringType		lastFilledNo;						//查询的最后一条用户成交号 //update 2020.04.29 ywh
+	TDAStringType		maxItemNumOnePage;					//查询成交每页最大数量		
 };
 // 查询成交返回
 struct CFutureRspTradeField
@@ -386,56 +684,99 @@ struct CFutureRspExchangeField
 	TDAStringType 		NameEN;								// 交易所名称（英文）
 };
 // 查询资金请求
+// Query fund
 struct CFutureQryCapitalField
 {
-	TDACharType			Unused;								// 不使用	
+	TDACharType			Unused;								// 不使用
+															// No use
+
 	TDAStringType		ErrorDescription;					// 错误信息
+															// Error description
 };
 // 查询资金返回
+// Query fund return struct
 struct CFutureRspCapitalField
 {
 	TDAStringType		UserId;								// 用户标识
-	TDAStringType		InMoney;							// 入金
-	TDAStringType		OutMoney;							// 出金
-	TDAStringType		TodayCanUse;						// 今可用
-	TDAStringType		TodayAmount;						// 今结存
-	TDAStringType		TodayBalance;						// 今权益
-	TDAStringType		FreezenMoney;						// 冻结资金
+															// User id
+
+	TDAStringType		Deposit;							// 入金
+															// Deposit
+
+	TDAStringType		Withdraw;							// 出金
+															// Withdraw
+
+	TDAStringType		TodayTradableFund;					// 旧：今可用；新：今日可用于交易的资金量
+															// Today tradable fund amount
+
+	TDAStringType		TodayInitialBalance;				// 旧：今结存；新：当日期初权益
+															// Today inital balance
+
+	TDAStringType		TodayRealtimeBalance;				// 旧：今权益；新：当日实时浮动权益
+															// Today realtime floating balance with Profit&Loss
+
+	TDAStringType		FrozenFund;							// 冻结资金
+															// Frozen fund
+
 	TDAStringType		Commission;							// 佣金
-	TDAStringType		Margin;								// 保证金
-	TDAStringType		OldCanUse;							// 昨可用
-	TDAStringType		OldAmount;							// 昨结存
-	TDAStringType		OldBalance;							// 昨权益
-	TDAStringType		FloatingProfit;						// 浮动盈亏
+															// Commission
+
+	TDAStringType		InitialMargin;						// 旧：保证金；新：初始保证金
+															// Initial margin
+								
+	TDAStringType		YdTradableFund;						// 旧：昨可用；新：昨日可用于交易的资金量
+															// Yesterday tradable fund amount
+
+	TDAStringType		YdInitialBalance;					// 旧：昨结存；新：昨日期初权益
+															// Yesterday inital balance
+
+	TDAStringType		YdFinalBalance;						// 旧：昨权益；新：昨日期末权益
+															// Yesterday final balance with Profit&Loss
+
+	TDAStringType		ProfitLoss;							// 浮动盈亏
+															// Profit and loss
+
 	TDAStringType		CurrencyNo;							// 币种编号 
+															// Currency No
+
 	TDAMoneyType		CurrencyRate;						// 货币与基本的汇率
-	TDAMoneyType		UnexpiredProfit;					// 未到期平盈
-	TDAMoneyType		UnaccountProfit;					// 未结平盈
-	TDAMoneyType		KeepDeposit;						// 维持保证金
-	TDAMoneyType		Royalty;							// 期权权利金
-	TDAMoneyType		Credit;								// 信任额度
-	TDAMoneyType		AddCapital;							// 配资资金
-	TDAMoneyType		IniEquity;							// 初始资金
-	TDAStringType		AccountNo;							// 资金帐号 1
-	TDAMoneyType		MortgageMoney;						// 按揭价值 20150610 added for 港股
-	TDAMoneyType		MarginLimit;						// 孖展上限额度 20150727 added for 港股
-	TDAMoneyType		BorrowValue;						// 借货价值 20150727 added for 港股
-	TDAMoneyType		T1;									// T1 20160219 added for 港股
-	TDAMoneyType		T2;									// T2 20160219 added for 港股
-	TDAMoneyType		T3;									// T3 20160219 added for 港股
-	TDAMoneyType		TN;									// Tn 20160219 added for 港股
+															// Currency rate
+
+	TDAMoneyType		LMEUnexpiredPL;						// LME未到期平盈
+															// LME unexpired profit&losss
+
+	TDAMoneyType		LMEUnaccountPL;						// LME未结平盈
+															// LME unaccounting profit&losss
+
+	TDAMoneyType		MaintenanceMargin;					// 维持保证金
+															// Maintenance margin
+
+	TDAMoneyType		Premium;							// 期权权利金
+															// Premium for options
+
+	TDAMoneyType		CreditAmount;						// 信任额度
+															// Credit amount
+	
+	TDAMoneyType		IntialFund;							// 初始资金
+															// Intial fund
+
+	TDAStringType		FundAccountNo;						// 资金帐号 
+															// Fund account No
+							
 	TDAMoneyType		TradeLimit;							// 交易限额
-	TDAMoneyType		CanCashOut;							// 可取资金
-	TDAMoneyType		AccruedCrInt;						// 月存款利息
-	TDAMoneyType		AccruedDrInt;						// 月欠款利息
-	TDAMoneyType		CrossMax;							// 跨市场资金限额
-	TDAMoneyType		SellFreezenMoney;					// 卖空冻结资金
-	TDAMoneyType		SellInterest;						// 卖空利息
-	TDAMoneyType		SellNeedAddMargin;					// 需补按金
-	TDAStringType		NetProfit;							// 净盈利 1
-	TDAStringType		ProfitRate;							// 盈利率 1
-	TDAStringType		RiskRate;							// 风险率 1
+															// Trade limit
+
+	TDAMoneyType		CanCashOutMoneyAmount;				// 可取资金
+															// Can cash out money amount
+
+	TDAMoneyType		DepositInterest;					// 月存款利息
+															// Monthly deposit interest
+
+	TDAMoneyType		LoanInterest;						// 月欠款利息
+															// Monthly loan interest
+
 	TDAStringType		ErrorDescription;					// 错误信息
+															// Error description
 };
 // 查询持仓请求
 struct CFutureQryPositionField
@@ -574,30 +915,80 @@ struct CFutureRspVersionField
 };
 //-------------------------------------------------------------------------
 // 推送订单变化
+// Push order change struct
 struct CFutureRtnOrderField
 {
-	TDAStringType		LocalOrderNo;						// 本地订单号
-	TDAStringType		ExchangeNo;							// 交易所代码
-	TDAStringType		TreatyCode;							// 合约代码
-	TDAStringType		OrderNo;							// 定单号
-	TDAIntType			OrderNumber;						// 委托数量
-	TDAIntType			FilledNumber;						// 已成交数量
-	TDAPriceType		FilledAdvPrice;						// 成交均价
-	TDAIntType			BuyHoldNumber;						// 持买数量
-	TDAPriceType		BuyHoldOpenPrice;					// 持买开仓均价
-	TDAPriceType		BuyHoldPrice;						// 持买均价
-	TDAIntType			SaleHoldNumber;						// 持卖数量
-	TDAPriceType		SaleHoldOpenPrice;					// 持卖开仓均价
-	TDAPriceType		SaleHoldPrice;						// 持卖均价
-	TDAStringType		IsCanceled;							// 是否已经撤单（0：没有；1：已撤单）
+	TDAStringType		LocalNo;							// 本地编号 API用户的程序指定的本地订单编号
+															// Order ID assigned by API user program
+
+	TDAStringType		ExchangeCode;						// 交易所代码
+															// Exchange code
+
+	TDAStringType		ContractCode;						// 合约代码
+															// Contract code
+
+	TDAStringType		OrderNo;							// 定单号 交易所系统给定的订单号，LocalNo:SystemNo:OrderNo是一对一对一的关系
+															// the order number given by the exchange system ,LocalNo:SystemNo:OrderNo,these three are one-to-one relationships
+
+	TDAIntType			OrderQty;							// 委托数量
+															// Quantity of entrusted order
+
+	TDAIntType			FilledQty;							// 已成交数量
+															// Filled quantity
+
+	TDAPriceType		FilledAvgPrice;						// 成交均价
+															// Filled average price	
+
+	TDAIntType			LongPositionQty;					// 持买数量
+															// Long position quantity
+
+	TDAPriceType		LongPosAveragePrx;					// 旧：持买开仓均价；新：多仓成交均价
+															// Long - position average price
+
+	TDAPriceType		CNLongPosAveragePrx;				// 中国品种(比如INE/sc)盯市用的平均价
+															// Long - position average price for Chinese varieties (e.g., INE/sc)
+
+	TDAIntType			ShortPositionQty;					// 持卖数量
+															// Short position quantity
+
+	TDAPriceType		ShortPosAveragePrx;					// 旧：持卖开仓均价；新：空仓成交均价
+															// Short position transaction average price
+
+	TDAPriceType		CNShortPosAveragePrx;				// 中国品种(比如INE/sc)盯市用的平均价
+															// Short - position average price for Chinese varieties (e.g., INE/sc)
+	// 是否已经撤单：
+	//	    DERIVATIVE_ORDER_IS_NOT_CANCELLED：没有；DERIVATIVE_ORDER_IS_CANCELLED：已撤单														// Short  position average price for Chinese varieties (e.g., INE/sc)
+	// Order is cancelled ：
+	//		DERIVATIVE_ORDER_IS_NOT_CANCELLED=order is not cancelled
+	//		DERIVATIVE_ORDER_IS_CANCELLED=order is cancelled
+	TDAStringType		IsCanceled;							
+					
 	TDAPriceType		FilledTotalFee;						// 成交总的手续费
-	TDAIntType			Status;								// 顺序号
+															// Total transaction fee
+
+	TDAIntType			SequenceNo;							// 顺序号
+															// Sequence No
+
 	TDAStringType		AccountNo;							// 资金帐号
-	TDAStringType		HoldType;							// 持仓类型（0：昨仓；1：今仓）
-	TDAPriceType		HoldMarginBuy;						// 持买保证金
-	TDAPriceType		HoldMarginSale;						// 持卖保证金
+															// Account No
+	//持仓类型:
+	//		DERIVATIVE_POSITION_TYPE_Y=昨仓,DERIVATIVE_POSITION_TYPE_T=今仓
+	//Position type:
+	//		DERIVATIVE_POSITION_TYPE_Y=yesterday position, DERIVATIVE_POSITION_TYPE_T=today position
+	TDAStringType		PositionType;						
+															
+
+	TDAPriceType		LongPosMargin;						// 持买保证金
+															// Long position margin
+
+	TDAPriceType		ShortPosMargin;						// 持卖保证金
+															// Short position margin
+
 	TDAPriceType		CurrPrice;							// 最新价
-	TDAPriceType		FloatProfit;						// 浮动盈亏
+															// Current price
+
+	TDAPriceType		ProfitLoss;							// 浮动盈亏
+															// Profit loss
 };
 // 推送资金变化
 struct CFutureRtnCapitalField
@@ -714,8 +1105,11 @@ struct CFutureQryTotalPositionField
 	TDAStringType		AccountNo;							// 资金账号
 	TDAStringType		ErrorDescription;					// 错误信息
 };
+
 // 查询持仓合计返回
+// Query position total return
 typedef CFutureRtnOrderField CFutureRspTotalPositionField;
+
 // 查询策略请求
 struct CFutureQryStrategyField
 {
@@ -725,35 +1119,45 @@ struct CFutureQryStrategyField
 // 查询策略返回
 struct CFutureRspStrategyField
 {
-	TDAStringType		UserId;								// 策略所属用户艾迪
-	TDAStringType		KeyId;								// 策略Id
-	TDAStringType		Name;								// 策略名称
-	TDAStringType		Code;								// 策略代码
-	TDAIntType			PriceType;							// 策略价格类型
-	TDAIntType			PriceTypeDetailType;				// 策略价格详细类型
-	TDAStringType		PriceFormula;						// 策略价格公式
-	TDAIntType			TriggerMethod;						// 触发模式
-	TDAIntType			InnerProtect;						// 是否启用内盘保护
-	TDAIntType			PassiveFailCloseMainLeg;			// 是否被动腿下单失败立即平对应主动腿
-	TDAIntType			SlipPoint;							// 触发模式为2：成交优先时设置的滑点数
-	TDAIntType			RecoverPriceMethod;					// 追加保护策略
-	TDAIntType			RecoverPriceSeconds;				// 被动腿挂单多少秒后以市价追单
-	TDAStringType		SetType;							// 策略设置类型
-	TDAPriceType		MinChangePrice;						// 策略行情价格最小变动单位
-	TDAIntType			MaxNum;								// 主动腿单次最大下单量
-	TDAIntType			SuportQuantity;						// 被动腿合约最小对盘挂单量
-	TDAIntType			SafeDeep;							// 安全深度
-	TDAIntType			MainRange;							// 主动区域
-	TDAStringType		ManualZhuiDanBeyondNum;				// 单腿手动追被动设置
-	TDAStringType		ManualPingZhuDongBeyondNum;			// 单腿手动平主动设置
-	TDAIntType			AutoGuaDanSeconds;					// 单腿自动定时设置，挂单秒数
-	TDAIntType			AutoZhuiBeiDongDots;				// 单腿自动定时追被动设置
-	TDAIntType			AutoPingZhuDongDots;				// 单腿自动定时平主动设置
-	TDAIntType			AutoZhiSunDot;						// 单腿自动止损设置
-	TDAIntType			AutoZhiSunZhuiBeiDongDots;			// 单腿自动止损追被动设置，追价滑点数：
-	TDAIntType			AutoZhiSunPingZhuDongDots;			// 单腿自动止损平主动设置，追价滑点数：
-	TDAIntType			DotLen;								// 策略行情价格小数位数
-	TDAStringType		TradeTime;							// 设置交易的时间段
+	TDAStringType		CommodityCode;					// 商品编号合约NO 
+	TDAStringType		ExchangeNo;						// 交易所编号
+	TDAStringType		ContractNo;						// 合约NO
+	TDAStringType		ContractFName;					// 合约名
+	TDAStringType		CommodityNo;					// 商品编号
+	TDAStringType		CommodityFName;					// 商品名 
+	TDAStringType		CommodityType;					// 商品类别 
+	TDAStringType		CommodityFCurrencyNo;			// 货币编号 
+	TDAStringType		CurrencyFName;					// 货币名称 
+	TDAPriceType		ProductDot;						// 点值（一个最小跳点的价值）
+	TDAPriceType		UpperTick;						// 最小变动单位 
+	TDAStringType		ExchangeName;					// 交易所名称 
+	TDAPriceType		LastSettlePrice;				// 上日结算价 
+	TDAStringType		TradeMonth;						// 交易月 (yyyyMM)/交割日 (yyyyMMdd)
+	TDAIntType			DotNum;							// 行情小数点位数
+	TDAIntType			LowerTick;						// 进阶单位
+	TDAIntType			DotNumCarry;					// 调期小数点位数
+	TDAPriceType		UpperTickCarry;					// 调期最小变动单位
+	TDAStringType		FirstNoticeDay;					// 首次通知日 (yyyyMMdd)
+	TDAPriceType		FreezenPercent;					// 冻结保证金百分比 （上海能源买入保证金百分比）
+	TDAPriceType		FreezenMoney;					// 冻结保证金固定值 
+	TDAPriceType		FeeMoney;						// 固定手续费 
+	TDAPriceType		FeePercent;						// 百分比手续费 
+	TDAPriceType		PriceStrike;					// 现货商品昨结算价 
+	TDAPriceType		ProductDotStrike;				// 现货商品点值  
+	TDAPriceType		UpperTickStrike;				// 现货商品最小变动单位 
+	TDAStringType		LastTradeDay;					// 最后交易日 (yyyyMMdd)
+	TDAStringType		LastUpdateDay;					// 最后更新日 (yyyyMMdd)
+	TDAPriceType		CriticalPrice;					// 期权临界价格 
+	TDAPriceType		CriticalMinChangedPrice;		// 期权临界价格以下的最小跳点 
+	TDAStringType		ExchangeSub;					// 实际交易所(CME细分成3个交易所:CME,CME_COMEX,CME_NYMEX)
+	TDAStringType		OptionType;						// 期权类型(R：看涨；F：看跌)
+	TDAStringType		OptionMonth;					// 期权年月(yyyyMM)
+	TDAStringType		OptionStrikePrice;				// 期权执行价格
+	TDAStringType		OptionCommodityNo;				// 期权对应期货商品编号（上海能源卖出保证金百分比）
+	TDAStringType		OptionContractNo;				// 期权对应期货合约编号
+	TDAStringType		ContractFNameEN;				// 合约名（英文）
+	TDAStringType		CommodityFNameEN;				// 商品名（英文）
+	TDAStringType		OptionStyle;					// 期权类别(E：欧式；A：美式)
 };
 // 查询策略明细请求
 struct CFutureQryStrategyDetailField
@@ -794,3 +1198,6 @@ struct CFutureRspStrategyDetailField
 	TDAIntType			MainRange;							// 主动区域
 };
 
+
+
+}//end of namespace Directaccess

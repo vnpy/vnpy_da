@@ -13,6 +13,7 @@ CMarketReqUserLoginField = {
     "SoftwareVersion": "string",
     "AuthorCode": "string",
     "ErrorDescription": "string",
+    "BrokerIDForMarketPrice": "string",
 }
 
 CMarketRspUserLoginField = {
@@ -117,3 +118,4 @@ CMarketRspTradeDateField = {
     "TradeDate": "string",
     "TradeProduct": "string",
 }
+

@@ -94,3 +94,15 @@ void onRspMarketData(const dict &data, const dict &error, int reqid, bool last) 
 	}
 };
 
+void onRspUserLogout(const dict &error, int reqid, bool last) override
+{
+	try
+	{
+		PYBIND11_OVERLOAD(void, MarketApi, onRspUserLogout, error, reqid, last);
+	}
+	catch (const error_already_set &e)
+	{
+		cout << e.what() << endl;
+	}
+};
+

@@ -1,12 +1,8 @@
 import wmi
-import requests
 from datetime import datetime
 from copy import copy
 from collections import defaultdict
 from typing import Dict, List, Tuple
-from csv import DictReader
-from io import StringIO
-from requests.models import Response
 
 from vnpy.event import EventEngine
 from vnpy.trader.constant import (
@@ -28,8 +24,6 @@ from vnpy.trader.object import (
     ContractData,
     OrderRequest,
     CancelRequest,
-    HistoryRequest,
-    BarData,
     SubscribeRequest,
 )
 from vnpy.trader.utility import ZoneInfo
@@ -38,36 +32,51 @@ from ..api import (
     MarketApi,
     FutureApi,
     DAF_SUB_Append,
-    DAF_TYPE_Future
+    DAF_TYPE_Future,
+    DERIVATIVE_TDY_TIF,
+    DERIVATIVE_ORDER_STATE1,
+    DERIVATIVE_ORDER_STATE2,
+    DERIVATIVE_ORDER_STATE3,
+    DERIVATIVE_ORDER_STATE4,
+    DERIVATIVE_ORDER_STATE5,
+    DERIVATIVE_ORDER_STATE6,
+    DERIVATIVE_ORDER_STATE7,
+    DERIVATIVE_ORDER_STATE8,
+    DERIVATIVE_ORDER_STATE9,
+    DERIVATIVE_ORDER_STATEA,
+    DERIVATIVE_ORDER_IS_CANCELLED,
+    STOCK_BID,
+    STOCK_ASK,
+    STOCK_LIMIT_ORDER,
+    STOCK_MARKET_ORDER
 )
 
 
 # 委托状态映射
 STATUS_DA2VT: Dict[str, Status] = {
-    "1": Status.SUBMITTING,
-    "2": Status.NOTTRADED,
-    "3": Status.PARTTRADED,
-    "4": Status.ALLTRADED,
-    "5": Status.CANCELLED,
-    "6": Status.CANCELLED,
-    "7": Status.REJECTED,
-    "8": Status.SUBMITTING,
-    "9": Status.SUBMITTING,
-    "A": Status.SUBMITTING,
+    DERIVATIVE_ORDER_STATE1: Status.SUBMITTING,
+    DERIVATIVE_ORDER_STATE2: Status.NOTTRADED,
+    DERIVATIVE_ORDER_STATE3: Status.PARTTRADED,
+    DERIVATIVE_ORDER_STATE4: Status.ALLTRADED,
+    DERIVATIVE_ORDER_STATE5: Status.CANCELLED,
+    DERIVATIVE_ORDER_STATE6: Status.CANCELLED,
+    DERIVATIVE_ORDER_STATE7: Status.REJECTED,
+    DERIVATIVE_ORDER_STATE8: Status.SUBMITTING,
+    DERIVATIVE_ORDER_STATE9: Status.SUBMITTING,
+    DERIVATIVE_ORDER_STATEA: Status.SUBMITTING,
 }
 
 # 多空方向映射
 DIRECTION_VT2DA: Dict[Direction, str] = {
-    Direction.LONG: "1",
-    Direction.SHORT: "2"
+    Direction.LONG: STOCK_BID,
+    Direction.SHORT: STOCK_ASK
 }
 DIRECTION_DA2VT: Dict[str, Direction] = {v: k for k, v in DIRECTION_VT2DA.items()}
 
-
 # 委托类型映射
 ORDERTYPE_VT2DA: Dict[OrderType, str] = {
-    OrderType.LIMIT: "1",
-    OrderType.MARKET: "2"
+    OrderType.LIMIT: STOCK_LIMIT_ORDER,
+    OrderType.MARKET: STOCK_MARKET_ORDER
 }
 ORDERTYPE_DA2VT: Dict[str, OrderType] = {v: k for k, v in ORDERTYPE_VT2DA.items()}
 
@@ -87,11 +96,7 @@ EXCHANGE_DA2VT: Dict[str, Exchange] = {
     "LME": Exchange.LME,
     "SGXQ": Exchange.SGX,
     "HKEX": Exchange.HKFE,
-    "APEX": Exchange.APEX,
-    "CFFEX": Exchange.CFFEX,
-    "SHFE": Exchange.SHFE,
-    "DCE": Exchange.DCE,
-    "CZCE": Exchange.CZCE
+    "APEX": Exchange.APEX
 }
 EXCHANGE_VT2DA: Dict[Exchange, str] = {v: k for k, v in EXCHANGE_DA2VT.items()}
 
@@ -129,7 +134,8 @@ class DaGateway(BaseGateway):
         "密码": "",
         "交易服务器": "",
         "行情服务器": "",
-        "授权码": ""
+        "授权码": "",
+        "行情经纪商识别号": ""
     }
 
     exchanges: List[str] = list(EXCHANGE_DA2VT.values())
@@ -148,6 +154,7 @@ class DaGateway(BaseGateway):
         future_address: str = setting["交易服务器"]
         market_address: str = setting["行情服务器"]
         auth_code: str = setting["授权码"]
+        brokerid: str = setting["行情经纪商识别号"]
 
         if not future_address.startswith("tcp://"):
             future_address: str = "tcp://" + future_address
@@ -155,7 +162,7 @@ class DaGateway(BaseGateway):
             market_address: str = "tcp://" + market_address
 
         self.future_api.connect(future_address, userid, password, auth_code)
-        self.market_api.connect(market_address, userid, password, auth_code)
+        self.market_api.connect(market_address, userid, password, auth_code, brokerid)
 
     def subscribe(self, req: SubscribeRequest) -> None:
         """订阅行情"""
@@ -177,47 +184,6 @@ class DaGateway(BaseGateway):
         """查询持仓"""
         pass
 
-    def query_history(self, req: HistoryRequest) -> List[BarData]:
-        """查询历史数据"""
-        path: str = "http://222.73.120.40:8609/api/HistoryQuote"
-
-        params: dict = {
-            "type": "M1",
-            "exchangeNo": EXCHANGE_VT2DA[req.exchange],
-            "symbol": req.symbol,
-            "startTime": req.start.strftime("%Y-%m-%d"),
-            "count": ""
-        }
-
-        if req.end:
-            params["endTime"] = req.end.strftime("%Y-%m-%d")
-
-        headers: dict = {"Accept-Encoding": "gzip"}
-
-        r: Response = requests.get(path, headers=headers, params=params)
-
-        bars: List[BarData] = []
-        reader: List[dict] = DictReader(StringIO(r.json()))
-        for d in reader:
-            dt: datetime = datetime.strptime(d["时间"], "%Y-%m-%d %H:%M")
-            dt: datetime = dt.replace(tzinfo=CHINA_TZ)
-
-            bar: BarData = BarData(
-                symbol=req.symbol,
-                exchange=req.exchange,
-                interval=req.interval,
-                datetime=dt,
-                open_price=float(d["开盘价"]),
-                high_price=float(d["最高价"]),
-                low_price=float(d["最低价"]),
-                close_price=float(d["收盘价"]),
-                volume=int(d["成交量"]),
-                gateway_name=self.gateway_name
-            )
-            bars.append(bar)
-
-        return bars
-
     def close(self) -> None:
         """关闭接口"""
         self.future_api.close()
@@ -225,7 +191,7 @@ class DaGateway(BaseGateway):
 
     def write_error(self, msg: str, error: dict) -> None:
         """输出错误信息日志"""
-        error_id: str = error["ErrorID"]
+        error_id: int = error["ErrorID"]
         error_msg: str = error["ErrorMsg"]
         msg: str = f"{msg}，代码：{error_id}，信息：{error_msg}"
         self.write_log(msg)
@@ -251,6 +217,7 @@ class DaMarketApi(MarketApi):
         self.userid: str = ""
         self.password: str = ""
         self.auth_code: str = ""
+        self.brokerid: str = ""
 
     def onFrontConnected(self) -> None:
         """服务器连接成功回报"""
@@ -321,11 +288,12 @@ class DaMarketApi(MarketApi):
         tick.name = symbol_name_map[tick.vt_symbol]
         self.gateway.on_tick(tick)
 
-    def connect(self, address: str, userid: str, password: str, auth_code: str) -> None:
+    def connect(self, address: str, userid: str, password: str, auth_code: str, brokerid: str) -> None:
         """连接服务器"""
         self.userid = userid
         self.password = password
         self.auth_code = auth_code
+        self.brokerid = brokerid
 
         # 连接
         if not self.connect_status:
@@ -348,7 +316,8 @@ class DaMarketApi(MarketApi):
             "MacAddress": self.mac_address,
             "ComputerName": "Dev Server",
             "SoftwareName": "VeighNa",
-            "SoftwareVersion": "2.0",
+            "SoftwareVersion": "3.0",
+            "BrokerIDForMarketPrice" : self.brokerid
         }
 
         self.reqid += 1
@@ -441,12 +410,17 @@ class DaFutureApi(FutureApi):
         """请求需要验证回报"""
         print("on rsp need verify", firstLogin, hasSetQA)
 
+    def onRspAccount(self, data: dict, error: dict, reqid: int, last: bool) -> None:
+        """用户登录回报"""
+        currency_account_map[data["CurrencyNo"]] = data["AccountNo"]
+        account_currency_map[data["AccountNo"]] = data["CurrencyNo"]
+
     def onRspOrderInsert(self, data: dict, error: dict, reqid: int, last: bool) -> None:
         """委托下单回报"""
         if not data["OrderNo"]:
             return
 
-        errorid: str = error["ErrorID"]
+        errorid: int = error["ErrorID"]
         orderid: str = data["LocalNo"]
         order: OrderData = self.orders[orderid]
 
@@ -468,13 +442,6 @@ class DaFutureApi(FutureApi):
         if errorid:
             self.gateway.write_error("交易撤单失败", error)
 
-    def onRspSettlementInfoConfirm(self, data: dict, error: dict, reqid: int, last: bool) -> None:
-        """结算信息确认回报"""
-        self.gateway.write_log("结算信息确认成功")
-
-        self.reqid += 1
-        self.reqQryInstrument({}, self.reqid)
-
     def onRspQryInstrument(self, data: dict, error: dict, reqid: int, last: bool) -> None:
         """机构查询回报"""
         if error["ErrorID"]:
@@ -490,14 +457,18 @@ class DaFutureApi(FutureApi):
                 product=product,
                 size=data["ProductDot"] / data["UpperTick"],
                 pricetick=data["UpperTick"],
-                history_data=True,
                 gateway_name=self.gateway_name
             )
 
             if product == Product.OPTION:
+                underlying_symbol: str = data["OptionCommodityNo"]
+
+                contract.option_portfolio = underlying_symbol + "_O"
                 contract.option_type = OPTIONTYPE_DA2VT[data["OptionType"]]
                 contract.option_strike = to_float(data["OptionStrikePrice"])
+                contract.option_index = data["OptionStrikePrice"]
                 contract.option_expiry = datetime.strptime(data["LastTradeDay"], "%Y%m%d")
+                contract.option_underlying = data["OptionContractNo"]
 
             symbol_name_map[contract.vt_symbol] = contract.name
             symbol_currency_map[contract.symbol] = data["CommodityFCurrencyNo"]
@@ -513,21 +484,21 @@ class DaFutureApi(FutureApi):
 
     def onRspQryOrder(self, data: dict, error: dict, reqid: int, last: bool) -> None:
         """委托查询回报"""
-        if data["TreatyCode"]:
+        if data["ContractCode"]:
             timestamp: str = f"{data['OrderDate']} {data['OrderTime']}"
             dt: datetime = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
             dt: datetime = dt.replace(tzinfo=CHINA_TZ)
 
             order: OrderData = OrderData(
-                symbol=data["TreatyCode"],
+                symbol=data["ContractCode"],
                 exchange=EXCHANGE_DA2VT[data["ExchangeCode"]],
                 orderid=data["LocalNo"],
-                type=ORDERTYPE_DA2VT[data["PriceType"]],
-                direction=DIRECTION_DA2VT[data["BuySale"]],
-                offset=OFFSET_DA2VT[data["AddReduce"]],
+                type=ORDERTYPE_DA2VT[data["OrderType"]],
+                direction=DIRECTION_DA2VT[data["BidAskFlag"]],
+                offset=OFFSET_DA2VT[data["OpenCloseFlag"]],
                 price=float(data["OrderPrice"]),
-                volume=int(data["OrderNumber"]),
-                traded=int(data["FilledNumber"]),
+                volume=int(data["OrderQty"]),
+                traded=int(data["FilledQty"]),
                 status=STATUS_DA2VT[data["OrderState"]],
                 datetime=dt,
                 gateway_name=self.gateway_name
@@ -574,13 +545,11 @@ class DaFutureApi(FutureApi):
         """资金查询回报"""
         account: AccountData = AccountData(
             accountid=data["CurrencyNo"],
-            balance=float(data["TodayBalance"]),
-            frozen=float(data["FreezenMoney"]),
+            balance=float(data["TodayRealtimeBalance"]),
+            frozen=float(data["FrozenFund"]),
             gateway_name=self.gateway_name
         )
 
-        currency_account_map[data["CurrencyNo"]] = data["AccountNo"]
-        account_currency_map[data["AccountNo"]] = data["CurrencyNo"]
         self.gateway.on_account(account)
 
         if last:
@@ -588,23 +557,23 @@ class DaFutureApi(FutureApi):
 
     def onRspQryTotalPosition(self, data: dict, error: dict, reqid: int, last: bool) -> None:
         """持仓查询回报"""
-        if data["TreatyCode"]:
+        if data["ContractCode"]:
             long_position: PositionData = PositionData(
-                symbol=data["TreatyCode"],
-                exchange=EXCHANGE_DA2VT[data["ExchangeNo"]],
+                symbol=data["ContractCode"],
+                exchange=EXCHANGE_DA2VT[data["ExchangeCode"]],
                 direction=Direction.LONG,
-                volume=data["BuyHoldNumber"],
-                price=data["BuyHoldOpenPrice"],
+                volume=data["LongPositionQty"],
+                price=data["LongPosAveragePrx"],
                 gateway_name=self.gateway_name
             )
             self.gateway.on_position(long_position)
 
             short_position: PositionData = PositionData(
-                symbol=data["TreatyCode"],
-                exchange=EXCHANGE_DA2VT[data["ExchangeNo"]],
+                symbol=data["ContractCode"],
+                exchange=EXCHANGE_DA2VT[data["ExchangeCode"]],
                 direction=Direction.SHORT,
-                volume=data["SaleHoldNumber"],
-                price=data["SaleHoldOpenPrice"],
+                volume=data["ShortPositionQty"],
+                price=data["ShortPosAveragePrx"],
                 gateway_name=self.gateway_name
             )
             self.gateway.on_position(short_position)
@@ -614,7 +583,7 @@ class DaFutureApi(FutureApi):
 
     def onRtnOrder(self, data: dict, error: dict, reqid: int, last: bool) -> None:
         """委托更新推送"""
-        orderid: str = data["LocalOrderNo"]
+        orderid: str = data["LocalNo"]
         self.local_no: int = max(self.local_no, int(orderid))
 
         order: OrderData = self.orders.get(orderid, None)
@@ -625,9 +594,9 @@ class DaFutureApi(FutureApi):
         if not order.is_active():
             return
 
-        order.traded = data["FilledNumber"]
+        order.traded = data["FilledQty"]
 
-        if data["IsCanceled"] == "1":
+        if data["IsCanceled"] == DERIVATIVE_ORDER_IS_CANCELLED:
             order.status = Status.CANCELLED
         elif order.traded == order.volume:
             order.status = Status.ALLTRADED
@@ -658,21 +627,21 @@ class DaFutureApi(FutureApi):
     def onRtnPosition(self, data: dict, error: dict, reqid: int, last: bool) -> None:
         """持仓更新推送"""
         long_position: PositionData = PositionData(
-            symbol=data["TreatyCode"],
-            exchange=EXCHANGE_DA2VT[data["ExchangeNo"]],
+            symbol=data["ContractCode"],
+            exchange=EXCHANGE_DA2VT[data["ExchangeCode"]],
             direction=Direction.LONG,
-            volume=data["BuyHoldNumber"],
-            price=data["BuyHoldOpenPrice"],
+            volume=data["LongPositionQty"],
+            price=data["LongPosAveragePrx"],
             gateway_name=self.gateway_name
         )
         self.gateway.on_position(long_position)
 
         short_position: PositionData = PositionData(
-            symbol=data["TreatyCode"],
-            exchange=EXCHANGE_DA2VT[data["ExchangeNo"]],
+            symbol=data["ContractCode"],
+            exchange=EXCHANGE_DA2VT[data["ExchangeCode"]],
             direction=Direction.SHORT,
-            volume=data["SaleHoldNumber"],
-            price=data["SaleHoldOpenPrice"],
+            volume=data["ShortPositionQty"],
+            price=data["ShortPosAveragePrx"],
             gateway_name=self.gateway_name
         )
         self.gateway.on_position(short_position)
@@ -690,7 +659,7 @@ class DaFutureApi(FutureApi):
         self.auth_code = auth_code
 
         if not self.connect_status:
-            self.createFutureApi(False, "future_log.txt")
+            self.createFutureApi(False, "future_log.txt", "")
 
             self.registerNameServer(address)
             self.init()
@@ -698,21 +667,6 @@ class DaFutureApi(FutureApi):
             self.connect_status = True
         else:
             self.login()
-
-    def authenticate(self) -> None:
-        """发起授权验证"""
-        req: dict = {
-            "UserID": self.userid,
-            "BrokerID": self.brokerid,
-            "AuthCode": self.auth_code,
-            "AppID": self.appid
-        }
-
-        if self.product_info:
-            req["UserProductInfo"] = self.product_info
-
-        self.reqid += 1
-        self.reqAuthenticate(req, self.reqid)
 
     def login(self) -> None:
         """用户登录"""
@@ -723,7 +677,7 @@ class DaFutureApi(FutureApi):
             "MacAddress": self.mac_address,
             "ComputerName": "Dev Server",
             "SoftwareName": "VeighNa",
-            "SoftwareVersion": "2.0",
+            "SoftwareVersion": "3.0",
         }
 
         self.reqid += 1
@@ -740,14 +694,13 @@ class DaFutureApi(FutureApi):
             "UserId": self.userid,
             "AccountNo": account_no,
             "LocalNo": str(self.local_no),
-            "TradePwd": self.password,
             "ExchangeCode": EXCHANGE_VT2DA[req.exchange],
-            "TreatyCode": req.symbol,
-            "BuySale": DIRECTION_VT2DA[req.direction],
+            "ContractCode": req.symbol,
+            "BidAskFlag": DIRECTION_VT2DA[req.direction],
             "OrderPrice": str(req.price),
-            "OrderNumber": str(int(req.volume)),
-            "PriceType": ORDERTYPE_VT2DA[req.type],
-            "ValidDate": "1"
+            "OrderQty": str(int(req.volume)),
+            "OrderType": ORDERTYPE_VT2DA[req.type],
+            "TIF": DERIVATIVE_TDY_TIF
         }
 
         self.reqid += 1
@@ -765,7 +718,7 @@ class DaFutureApi(FutureApi):
         order: OrderData = self.orders[req.orderid]
 
         if order.orderid not in self.order_info:
-            msg = f"撤单失败，尚未收到服务端返回的委托信息{order.orderid}"
+            msg: str = f"撤单失败，尚未收到服务端返回的委托信息{order.orderid}"
             self.gateway.write_log(msg)
             return
 
@@ -777,10 +730,9 @@ class DaFutureApi(FutureApi):
             "UserId": self.userid,
             "LocalNo": req.orderid,
             "AccountNo": account_no,
-            "TradePwd": self.password,
             "ExchangeCode": EXCHANGE_VT2DA[req.exchange],
-            "TreatyCode": req.symbol,
-            "BuySale": DIRECTION_VT2DA[order.direction],
+            "ContractCode": req.symbol,
+            "BidAskFlag": DIRECTION_VT2DA[order.direction],
             "OrderNo": order_no,
             "SystemNo": system_no
         }
