@@ -319,7 +319,7 @@ class DaMarketApi(MarketApi):
             "ComputerName": "Dev Server",
             "SoftwareName": "VeighNa",
             "SoftwareVersion": "3.0",
-            "BrokerIDForMarketPrice" : self.brokerid
+            "BrokerIDForMarketPrice": self.brokerid
         }
 
         self.reqid += 1

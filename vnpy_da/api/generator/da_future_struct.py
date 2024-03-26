@@ -699,4 +699,3 @@ CFutureRspStrategyDetailField = {
     "SafeDeep": "int",
     "MainRange": "int",
 }
-
