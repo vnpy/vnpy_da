@@ -2,7 +2,6 @@ import wmi
 from datetime import datetime
 from copy import copy
 from collections import defaultdict
-from typing import Dict, List, Tuple
 
 from vnpy.event import EventEngine
 from vnpy.trader.constant import (
@@ -53,7 +52,7 @@ from ..api import (
 
 
 # 委托状态映射
-STATUS_DA2VT: Dict[str, Status] = {
+STATUS_DA2VT: dict[str, Status] = {
     DERIVATIVE_ORDER_STATE1: Status.SUBMITTING,
     DERIVATIVE_ORDER_STATE2: Status.NOTTRADED,
     DERIVATIVE_ORDER_STATE3: Status.PARTTRADED,
@@ -67,30 +66,30 @@ STATUS_DA2VT: Dict[str, Status] = {
 }
 
 # 多空方向映射
-DIRECTION_VT2DA: Dict[Direction, str] = {
+DIRECTION_VT2DA: dict[Direction, str] = {
     Direction.LONG: STOCK_BID,
     Direction.SHORT: STOCK_ASK
 }
-DIRECTION_DA2VT: Dict[str, Direction] = {v: k for k, v in DIRECTION_VT2DA.items()}
+DIRECTION_DA2VT: dict[str, Direction] = {v: k for k, v in DIRECTION_VT2DA.items()}
 
 # 委托类型映射
-ORDERTYPE_VT2DA: Dict[OrderType, str] = {
+ORDERTYPE_VT2DA: dict[OrderType, str] = {
     OrderType.LIMIT: STOCK_LIMIT_ORDER,
     OrderType.MARKET: STOCK_MARKET_ORDER
 }
-ORDERTYPE_DA2VT: Dict[str, OrderType] = {v: k for k, v in ORDERTYPE_VT2DA.items()}
+ORDERTYPE_DA2VT: dict[str, OrderType] = {v: k for k, v in ORDERTYPE_VT2DA.items()}
 
 # 开平方向映射
-OFFSET_VT2DA: Dict[Offset, str] = {
+OFFSET_VT2DA: dict[Offset, str] = {
     Offset.OPEN: "1",
     Offset.CLOSE: "2",
     Offset.CLOSETODAY: "3",
     Offset.CLOSEYESTERDAY: "4",
 }
-OFFSET_DA2VT: Dict[str, Offset] = {v: k for k, v in OFFSET_VT2DA.items()}
+OFFSET_DA2VT: dict[str, Offset] = {v: k for k, v in OFFSET_VT2DA.items()}
 
 # 交易所映射
-EXCHANGE_DA2VT: Dict[str, Exchange] = {
+EXCHANGE_DA2VT: dict[str, Exchange] = {
     "CME": Exchange.CME,
     "CME_CBT": Exchange.CBOT,
     "LME": Exchange.LME,
@@ -98,16 +97,16 @@ EXCHANGE_DA2VT: Dict[str, Exchange] = {
     "HKEX": Exchange.HKFE,
     "APEX": Exchange.APEX
 }
-EXCHANGE_VT2DA: Dict[Exchange, str] = {v: k for k, v in EXCHANGE_DA2VT.items()}
+EXCHANGE_VT2DA: dict[Exchange, str] = {v: k for k, v in EXCHANGE_DA2VT.items()}
 
 # 产品类型映射
-PRODUCT_DA2VT: Dict[str, Product] = {
+PRODUCT_DA2VT: dict[str, Product] = {
     "F": Product.FUTURES,
     "O": Product.OPTION,
 }
 
 # 期权类型映射
-OPTIONTYPE_DA2VT: Dict[str, OptionType] = {
+OPTIONTYPE_DA2VT: dict[str, OptionType] = {
     "R": OptionType.CALL,
     "F": OptionType.PUT
 }
@@ -116,10 +115,10 @@ OPTIONTYPE_DA2VT: Dict[str, OptionType] = {
 CHINA_TZ = ZoneInfo("Asia/Shanghai")       # 中国时区
 
 # 全局缓存字典
-symbol_name_map: Dict[str, str] = {}
-symbol_currency_map: Dict[str, str] = {}
-currency_account_map: Dict[str, str] = {}
-account_currency_map: Dict[str, str] = {}
+symbol_name_map: dict[str, str] = {}
+symbol_currency_map: dict[str, str] = {}
+currency_account_map: dict[str, str] = {}
+account_currency_map: dict[str, str] = {}
 
 
 class DaGateway(BaseGateway):
@@ -129,7 +128,7 @@ class DaGateway(BaseGateway):
 
     default_name: str = "DA"
 
-    default_setting: Dict[str, str] = {
+    default_setting: dict[str, str] = {
         "用户名": "",
         "密码": "",
         "交易服务器": "",
@@ -138,7 +137,7 @@ class DaGateway(BaseGateway):
         "行情源识别号": ""
     }
 
-    exchanges: List[str] = list(EXCHANGE_DA2VT.values())
+    exchanges: list[str] = list(EXCHANGE_DA2VT.values())
 
     def __init__(self, event_engine: EventEngine, gateway_name: str) -> None:
         """构造函数"""
@@ -211,7 +210,7 @@ class DaMarketApi(MarketApi):
 
         self.connect_status: bool = False
         self.login_status: bool = False
-        self.subscribed: Dict[str, SubscribeRequest] = {}
+        self.subscribed: dict[str, SubscribeRequest] = {}
         self.mac_address: str = get_mac_address()
 
         self.userid: str = ""
@@ -377,8 +376,8 @@ class DaFutureApi(FutureApi):
 
         self.exchange_page = defaultdict(int)
 
-        self.orders: Dict[str, OrderData] = {}
-        self.order_info: Dict[str, Tuple] = {}
+        self.orders: dict[str, OrderData] = {}
+        self.order_info: dict[str, tuple] = {}
 
     def onFrontConnected(self) -> None:
         """服务器连接成功回报"""
