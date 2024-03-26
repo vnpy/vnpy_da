@@ -242,6 +242,9 @@ class DaMarketApi(MarketApi):
 
     def onRspMarketData(self, data: dict, error: dict, reqid: int, last: bool) -> None:
         """行情数据更新回报"""
+        if data["QuoteType"] != "Z":
+            return
+
         symbol: str = data["TreatyCode"]
         exchange: Exchange = EXCHANGE_DA2VT.get(data["ExchangeCode"], None)
         if not exchange:
