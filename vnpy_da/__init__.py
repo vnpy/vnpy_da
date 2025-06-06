@@ -25,6 +25,9 @@ import importlib_metadata
 from .da_gateway import DaGateway
 
 
+__all__ = ["DaGateway"]
+
+
 try:
     __version__ = importlib_metadata.version("vnpy_da")
 except importlib_metadata.PackageNotFoundError:
