@@ -22,7 +22,7 @@
 
 import importlib_metadata
 
-from .gateway import DaGateway
+from .da_gateway import DaGateway
 
 
 try:
