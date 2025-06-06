@@ -2,6 +2,7 @@ import wmi
 from datetime import datetime
 from copy import copy
 from collections import defaultdict
+from typing import Any
 
 from vnpy.event import EventEngine
 from vnpy.trader.constant import (
@@ -155,9 +156,9 @@ class DaGateway(BaseGateway):
         brokerid: str = setting["行情源识别号"]
 
         if not future_address.startswith("tcp://"):
-            future_address: str = "tcp://" + future_address
+            future_address = "tcp://" + future_address
         if not market_address.startswith("tcp://"):
-            market_address: str = "tcp://" + market_address
+            market_address = "tcp://" + market_address
 
         self.future_api.connect(future_address, userid, password, auth_code)
         self.market_api.connect(market_address, userid, password, auth_code, brokerid)
@@ -191,7 +192,7 @@ class DaGateway(BaseGateway):
         """输出错误信息日志"""
         error_id: int = error["ErrorID"]
         error_msg: str = error["ErrorMsg"]
-        msg: str = f"{msg}，代码：{error_id}，信息：{error_msg}"
+        msg = f"{msg}，代码：{error_id}，信息：{error_msg}"
         self.write_log(msg)
 
 
@@ -224,13 +225,13 @@ class DaMarketApi(MarketApi):
 
     def onFrontDisconnected(self, reason: int) -> None:
         """服务器连接断开回报"""
-        self.login_status: bool = False
+        self.login_status = False
         self.gateway.write_log(f"行情服务器连接断开，原因{reason}")
 
     def onRspUserLogin(self, error: dict, reqid: int, last: bool) -> None:
         """用户登录请求回报"""
         if not error["ErrorID"]:
-            self.login_status: bool = True
+            self.login_status = True
             self.gateway.write_log("行情服务器登录成功")
 
             for req in self.subscribed.values():
@@ -249,7 +250,7 @@ class DaMarketApi(MarketApi):
             return
 
         dt: datetime = datetime.strptime(data['Time'], "%Y-%m-%d %H:%M:%S")
-        dt: datetime = dt.replace(tzinfo=CHINA_TZ)
+        dt = dt.replace(tzinfo=CHINA_TZ)
 
         tick: TickData = TickData(
             symbol=symbol,
@@ -373,7 +374,7 @@ class DaFutureApi(FutureApi):
         self.auth_code: str = ""
         self.mac_address: str = get_mac_address()
 
-        self.exchange_page = defaultdict(int)
+        self.exchange_page: defaultdict[Exchange, int] = defaultdict(int)
 
         self.orders: dict[str, OrderData] = {}
         self.order_info: dict[str, tuple] = {}
@@ -385,13 +386,13 @@ class DaFutureApi(FutureApi):
 
     def onFrontDisconnected(self, reason: int) -> None:
         """服务器连接断开回报"""
-        self.login_status: bool = False
+        self.login_status = False
         self.gateway.write_log(f"交易服务器连接断开，原因{reason}")
 
     def onRspUserLogin(self, error: dict, reqid: int, last: bool) -> None:
         """用户登录请求回报"""
         if not error["ErrorID"]:
-            self.login_status: bool = True
+            self.login_status = True
             self.gateway.write_log("交易服务器登录成功")
 
             # 查询可交易合约
@@ -404,7 +405,7 @@ class DaFutureApi(FutureApi):
             self.query_order()
             self.query_trade()
         else:
-            self.login_failed: bool = True
+            self.login_failed = True
             self.gateway.write_error("交易服务器登录失败", error)
 
     def onRspNeedVerify(self, firstLogin: bool, hasSetQA: bool) -> None:
@@ -488,7 +489,7 @@ class DaFutureApi(FutureApi):
         if data["ContractCode"]:
             timestamp: str = f"{data['OrderDate']} {data['OrderTime']}"
             dt: datetime = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
-            dt: datetime = dt.replace(tzinfo=CHINA_TZ)
+            dt = dt.replace(tzinfo=CHINA_TZ)
 
             order: OrderData = OrderData(
                 symbol=data["ContractCode"],
@@ -505,7 +506,7 @@ class DaFutureApi(FutureApi):
                 gateway_name=self.gateway_name
             )
 
-            self.local_no: int = max(self.local_no, int(data["LocalNo"]))
+            self.local_no = max(self.local_no, int(data["LocalNo"]))
             self.orders[order.orderid] = order
             self.order_info[order.orderid] = (data["OrderNo"], data["SystemNo"])
 
@@ -526,7 +527,7 @@ class DaFutureApi(FutureApi):
         """成交更新推送"""
         timestamp: str = f"{data['FilledDate']} {data['FilledTime']}"
         dt: datetime = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
-        dt: datetime = dt.replace(tzinfo=CHINA_TZ)
+        dt = dt.replace(tzinfo=CHINA_TZ)
 
         trade: TradeData = TradeData(
             symbol=data["TreatyCode"],
@@ -585,7 +586,7 @@ class DaFutureApi(FutureApi):
     def onRtnOrder(self, data: dict, error: dict, reqid: int, last: bool) -> None:
         """委托更新推送"""
         orderid: str = data["LocalNo"]
-        self.local_no: int = max(self.local_no, int(orderid))
+        self.local_no = max(self.local_no, int(orderid))
 
         order: OrderData = self.orders.get(orderid, None)
         if not order:
@@ -712,7 +713,8 @@ class DaFutureApi(FutureApi):
         self.orders[order.orderid] = order
         self.gateway.on_order(order)
 
-        return order.vt_orderid
+        vt_orderid: str = order.vt_orderid
+        return vt_orderid
 
     def cancel_order(self, req: CancelRequest) -> None:
         """委托撤单"""
@@ -765,7 +767,7 @@ class DaFutureApi(FutureApi):
         self.reqid += 1
         self.reqQryTotalPosition(da_req, self.reqid)
 
-    def query_contract(self, exchange: Exchange, page=0) -> None:
+    def query_contract(self, exchange: Exchange, page: int = 0) -> None:
         """查询合约"""
         da_exchange: str = EXCHANGE_VT2DA[exchange]
 
@@ -782,7 +784,7 @@ class DaFutureApi(FutureApi):
         pass
 
 
-def get_network_interface() -> str:
+def get_network_interface() -> Any:
     """获取网络接口"""
     c = wmi.WMI()
     interfaces = c.Win32_NetworkAdapterConfiguration(IPEnabled=1)
@@ -800,11 +802,12 @@ def get_network_interface() -> str:
 
 def get_mac_address() -> str:
     """获取mac地址"""
-    interface: str = get_network_interface()
+    interface: Any = get_network_interface()
     if not interface:
         return ""
 
-    return interface.MACAddress
+    mac_address: str = interface.MACAddress
+    return mac_address
 
 
 def to_int(data: str) -> int:
