@@ -31,6 +31,8 @@ pip install vnpy_da
 pip install .
 ```
 
+**请注意，vnpy_da需要通过pyda包加载行情API以及交易API。请通过直达国际官网-【下载】-【软件下载】-【Python API下载】下载API压缩包解压后安装对应的whl文件。**
+
 ## 使用
 
 以脚本方式启动（script/run.py）：
