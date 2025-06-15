@@ -4,19 +4,19 @@
 </p>
 
 <p align="center">
-    <img src ="https://img.shields.io/badge/version-1.18.2.1-blueviolet.svg"/>
+    <img src ="https://img.shields.io/badge/version-1.18.2.5.1-blueviolet.svg"/>
     <img src ="https://img.shields.io/badge/platform-windows-yellow.svg"/>
-    <img src ="https://img.shields.io/badge/python-3.10|3.11|3.12-blue.svg" />
+    <img src ="https://img.shields.io/badge/python-3.10|3.11|3.12|3.13-blue.svg" />
     <img src ="https://img.shields.io/github/license/vnpy/vnpy.svg?color=orange"/>
 </p>
 
 ## 说明
 
-基于DAApi的1.18.2.0版本封装开发的直达期货交易接口。
+基于DAApi的1.18.2.5Python版本开发的直达期货交易接口。
 
 ## 安装
 
-安装环境推荐基于3.9.0版本以上的【[**VeighNa Studio**](https://www.vnpy.com)】。
+安装环境推荐基于4.0.0版本以上的【[**VeighNa Studio**](https://www.vnpy.com)】。
 
 直接使用pip命令：
 
@@ -30,6 +30,8 @@ pip install vnpy_da
 ```
 pip install .
 ```
+
+**请注意，vnpy_da需要通过pyda包加载行情API以及交易API。请通过直达国际官网-【下载】-【软件下载】-【Python API下载】下载API压缩包解压后安装对应的whl文件。**
 
 ## 使用
 
