@@ -1,8 +1,6 @@
-import wmi
 from datetime import datetime
 from copy import copy
 from collections import defaultdict
-from typing import Any
 
 from vnpy.event import EventEngine
 from vnpy.trader.constant import (
@@ -49,6 +47,8 @@ from pyda.api.td_constant import (
     STOCK_LIMIT_ORDER,
     STOCK_MARKET_ORDER
 )
+
+from .os_support import get_mac_address
 
 
 # 委托状态映射
@@ -782,32 +782,6 @@ class DaFutureApi(FutureApi):
     def close(self) -> None:
         """断开连接"""
         pass
-
-
-def get_network_interface() -> Any:
-    """获取网络接口"""
-    c = wmi.WMI()
-    interfaces = c.Win32_NetworkAdapterConfiguration(IPEnabled=1)
-    if not interfaces:
-        return None
-
-    # 使用默认ip接入
-    for interface in interfaces:
-        if interface.DefaultIPGateway:
-            return interface
-
-    # 否则使用最新的
-    return interface
-
-
-def get_mac_address() -> str:
-    """获取mac地址"""
-    interface: Any = get_network_interface()
-    if not interface:
-        return ""
-
-    mac_address: str = interface.MACAddress
-    return mac_address
 
 
 def to_int(data: str) -> int:
