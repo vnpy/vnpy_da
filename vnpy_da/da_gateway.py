@@ -1,3 +1,4 @@
+import platform
 from datetime import datetime
 from copy import copy
 from collections import defaultdict
@@ -48,7 +49,10 @@ from pyda.api.td_constant import (
     STOCK_MARKET_ORDER
 )
 
-from .os_support import get_mac_address
+if platform.system() == "Windows":
+    from .terminal_info_windows import get_mac_address
+else:
+    from .terminal_info_linux import get_mac_address
 
 
 # 委托状态映射
